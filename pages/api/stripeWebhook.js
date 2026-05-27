@@ -38,13 +38,16 @@ function intervalFromPriceId(priceId) {
 
 async function updateUserPlan(strapiUserId, plan, subscriptionId, interval) {
   const mvcurl = process.env.NEXT_PUBLIC_STRAPI_HOST || 'http://localhost:1337';
-  // Use Strapi admin API token or service account for webhook updates
-  // Since webhooks don't have a user JWT, we call Strapi's custom endpoint
+  // Webhooks have no user JWT, so the Strapi endpoint (auth:false) is
+  // authenticated with a shared secret sent in the x-webhook-secret header.
+  // Must match WEBHOOK_SECRET on the Strapi backend.
   await axios.put(`${mvcurl}/api/updateUserPlan`, {
     userId: strapiUserId,
     plan,
     stripeSubscriptionId: subscriptionId,
     billingInterval: interval,
+  }, {
+    headers: { 'x-webhook-secret': process.env.WEBHOOK_SECRET || '' },
   });
 }
 
