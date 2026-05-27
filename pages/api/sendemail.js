@@ -7,7 +7,6 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  // TODO: Need to secure this!
   // Check if the request is coming from your own pages
   const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
   const origin = req.headers.origin;

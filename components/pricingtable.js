@@ -122,7 +122,7 @@ export default function PricingTable({ currentPlan, onSelectPlan, onManageBillin
                       </Button>
                     )}
                     {key === 'enterprise' && !isCurrent && (
-                      <Button href="mailto:express@represent.org" block outline style={{ borderColor: accent, color: accent, borderRadius: '8px' }}>
+                      <Button href="mailto:fotomap@represent.org" block outline style={{ borderColor: accent, color: accent, borderRadius: '8px' }}>
                         Contact Us
                       </Button>
                     )}

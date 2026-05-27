@@ -1,4 +1,4 @@
-# Express CMS — Tier-Based Pricing
+# Fotomap — Tier-Based Pricing
 
 ## Tier Structure
 
@@ -291,7 +291,7 @@ Use these in test mode:
 ### Phase 6: Navigation & Polish — DONE
 - [x] Pricing modal triggered from UsageBanner plan badge
 - [x] Over-limit warnings (storage + channels) in UsageBanner
-- [x] Contact email: express@represent.org (Enterprise)
+- [x] Contact email: fotomap@represent.org (Enterprise)
 
 ---
 

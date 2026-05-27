@@ -20,7 +20,7 @@ export default async function sendEmailLinks({channelID, privateID, channelName,
     return;
   const body = formatEmailContent(channelID, privateID, channelName);
   await axios.post('/api/sendemail', {
-    subject: "EXPRESS: " + channelName,
+    subject: "FOTOMAP: " + channelName,
     recipient: email,
     body: body
   }, {

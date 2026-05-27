@@ -10,7 +10,7 @@ export default function LandingFooter() {
     }}>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', columnGap: '20px', rowGap: '6px', fontSize: '0.85rem', flexWrap: 'wrap' }}>
         <a
-          href="https://github.com/tap2k/express"
+          href="https://github.com/tap2k/fotomap"
           target="_blank"
           rel="noopener noreferrer"
           style={{ color: '#555', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '5px' }}
@@ -18,7 +18,7 @@ export default function LandingFooter() {
           <FaGithub size={16} /> Frontend
         </a>
         <a
-          href="https://github.com/tap2k/MVCbackend"
+          href="https://github.com/tap2k/fotomap-backend"
           target="_blank"
           rel="noopener noreferrer"
           style={{ color: '#555', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '5px' }}

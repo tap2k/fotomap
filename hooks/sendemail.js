@@ -30,7 +30,6 @@ async function getAccessToken() {
 }
 
 export default async function sendEmail(subject, body, recipient) {
-  // TODO: NEED TO SECURE!
   const accessToken = await getAccessToken();
 
   const transporter = nodemailer.createTransport({
@@ -46,7 +45,7 @@ export default async function sendEmail(subject, body, recipient) {
 
   const mailOptions = {
     from: {
-      name: 'Express',
+      name: 'Fotomap',
       address: 'donotreply@represent.org'
     },
     to: recipient,

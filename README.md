@@ -1,18 +1,18 @@
-# Express CMS
+# Fotomap
 
 Multimedia content sharing platform with maps, slideshows, and grids. Built with Next.js 13 (Pages Router) + Reactstrap, backed by a Strapi headless CMS.
 
 ## Prerequisites
 
 - Node.js 18+
-- A running [Strapi backend](https://github.com/tap2k/MVCbackend)
+- A running [Strapi backend](https://github.com/tap2k/fotomap-backend)
 
 ## Setup
 
 1. Install dependencies:
 
 ```bash
-npm install
+npm install --legacy-peer-deps
 ```
 
 2. Create a `.env` file in the project root:
@@ -23,7 +23,7 @@ NEXT_PUBLIC_STRAPI_HOST=http://127.0.0.1:1337
 PRIVATE_SEED=<random-hex-string-for-channel-id-encryption>
 ```
 
-3. Start the [Strapi backend](https://github.com/tap2k/MVCbackend), then start this app:
+3. Start the [Strapi backend](https://github.com/tap2k/fotomap-backend), then start this app:
 
 ```bash
 npm run dev

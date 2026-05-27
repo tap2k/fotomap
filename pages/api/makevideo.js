@@ -1,36 +1,5 @@
 import axios from 'axios';
 import { parseCookies } from 'nookies';
-//import sendEmail from "../../hooks/sendemail";
-//import setError from "../../hooks/seterror";
-
-// Old approach: background processing with email send from this server
-/*
-async function processVideoAndSendEmail(channelid, email, mvcurl) {
-    const baseUrl = process.env.VIDEO_SERVER_URL || 'https://video.mahabot.in';
-
-    try {
-        const url = `${baseUrl}/mvc_video`;
-        const resp = await axios.post(url, {
-            channelid: channelid,
-            url: mvcurl,
-            email: email
-        }, {timeout: 3600000});
-
-        const data = resp.data;
-        const videourl = data["video_url"];
-
-        const subject = "EXPRESS VIDEO";
-        const recipient = email;
-        const body = `Your video is ready. Please access it at ${videourl}`;
-        await sendEmail(subject, body, recipient);
-
-        console.log('Video processed and email sent successfully');
-    } catch (error) {
-        console.error('Error in background processing:', error);
-        setError(error);
-    }
-}
-*/
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {

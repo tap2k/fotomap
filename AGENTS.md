@@ -1,6 +1,6 @@
-# Express CMS
+# Fotomap
 
-Multimedia content sharing platform using Maps, Slideshows, and Grids. Built with Next.js 13 (Pages Router) + Reactstrap frontend, backed by a Strapi headless CMS.
+Multimedia content sharing platform using Maps, Slideshows, and Grids. Built with Next.js 13 (Pages Router) + Reactstrap frontend, backed by a Strapi headless CMS ([fotomap-backend](https://github.com/tap2k/fotomap-backend)).
 
 ## Architecture
 
@@ -12,14 +12,14 @@ Frontend (this repo)          Backend (../strapi)
 ├── pages/api/   (8 endpoints)└── config/functions.js
 ├── public/      (static)
 ├── styles/      (CSS)
-└── data/        (credentials)
+└── data/        (local-only service credentials, gitignored)
 ```
 
 **Data flow:** UI Components → Custom Hooks → Next.js API Routes → Strapi API → Database/File Storage
 
-### Sibling Client: Admin (`../admin`)
+### Sibling Client
 
-An older separate Next.js 13 app sharing the same Strapi backend and nearly identical tech stack. Features may exist in one but not the other. Only refer to this codebase if asked.
+An older separate Next.js 13 app shares the same Strapi backend and a nearly identical tech stack. Features may exist in one but not the other. It lives outside this repo; only refer to it if explicitly asked.
 
 ## Tech Stack
 
@@ -129,9 +129,10 @@ Requires a running Strapi instance (configured via `NEXT_PUBLIC_STRAPI_HOST` in 
 - `NEXT_PUBLIC_BASE_URL` - Frontend URL (must match the domain users log in from — `localhost` and `127.0.0.1` are different for cookies)
 - `NEXT_PUBLIC_CLOUD_STORAGE` - When set (truthy), media URLs are served directly from cloud storage (DigitalOcean Spaces, Backblaze B2, Supabase) instead of proxied through Strapi. Leave unset for local dev. See `hooks/getmediaurl.js`.
 - `NEXT_PUBLIC_AI_ENABLED` - Toggle AI features (ChatGPT + DALL-E)
-- `VIDEO_SERVER_URL` - Video generation service (`~/dev/mahabot/mahabot`)
+- `VIDEO_SERVER_URL` - URL of the external video generation service
 - `OPENAI_API_KEY` - OpenAI API key
 - `PRIVATE_SEED` - Secret for XOR channel ID encryption (must match Strapi backend)
+- `NEXT_PUBLIC_UX4ME_URL` - Optional. Admin URL for `supabase`-provider users; when unset the UX4ME login button is inert
 
 ### Stripe Environment Variables (Cloud only — omit for self-hosted)
 - `STRIPE_SECRET_KEY` - Stripe secret key (`sk_test_...` or `sk_live_...`)
