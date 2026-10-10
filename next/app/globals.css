@@ -1,0 +1,117 @@
+@import 'tailwindcss';
+@import 'maplibre-gl/dist/maplibre-gl.css';
+
+/* Themes are a handful of CSS variables; a channel picks one with data-theme. */
+:root,
+[data-theme='light'] {
+  --bg: #ffffff;
+  --fg: #1d2327;
+  --muted: #69737d;
+  --card: #f4f6f8;
+  --line: #e2e6ea;
+  --accent: #1a5f7a;
+  --accent-fg: #ffffff;
+  --font: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+[data-theme='dark'] {
+  --bg: #121417;
+  --fg: #eceff1;
+  --muted: #9aa4ad;
+  --card: #1d2125;
+  --line: #2c3237;
+  --accent: #5fb3d3;
+  --accent-fg: #0b1215;
+}
+[data-theme='paper'] {
+  --bg: #f7f3ea;
+  --fg: #2b2620;
+  --muted: #776d60;
+  --card: #efe8d8;
+  --line: #ddd3bf;
+  --accent: #a4462b;
+  --accent-fg: #ffffff;
+  --font: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+}
+[data-theme='ocean'] {
+  --bg: #0d2233;
+  --fg: #e6f1f7;
+  --muted: #8fb0c4;
+  --card: #133047;
+  --line: #1d4462;
+  --accent: #4fd1c5;
+  --accent-fg: #062226;
+}
+[data-theme='forest'] {
+  --bg: #f2f5ef;
+  --fg: #1f2a1e;
+  --muted: #5f6f5c;
+  --card: #e4ebde;
+  --line: #ccd8c4;
+  --accent: #3d7a3a;
+  --accent-fg: #ffffff;
+}
+[data-theme='sunset'] {
+  --bg: #fff6ef;
+  --fg: #2d1c17;
+  --muted: #84675c;
+  --card: #fde8da;
+  --line: #f3d0bb;
+  --accent: #d9542b;
+  --accent-fg: #ffffff;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-card: var(--card);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-1.5 rounded-md border border-line bg-card px-3 py-1.5 text-sm font-medium text-fg transition hover:brightness-95 disabled:opacity-50;
+}
+@utility btn-primary {
+  @apply btn border-accent bg-accent text-accent-fg;
+}
+@utility btn-danger {
+  @apply btn border-red-700 bg-red-700 text-white;
+}
+@utility input {
+  @apply w-full rounded-md border border-line bg-bg px-3 py-2 text-sm text-fg outline-none focus:border-accent;
+}
+@utility label {
+  @apply mb-1 block text-sm font-medium;
+}
+@utility chip {
+  @apply inline-flex items-center gap-1 rounded-full border border-line px-2 py-0.5 text-xs;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.fade-in {
+  animation: fade-in 0.5s ease;
+}
+
+.prose-lite p {
+  margin: 0 0 0.75em;
+}
+.prose-lite a {
+  color: var(--accent);
+  text-decoration: underline;
+}

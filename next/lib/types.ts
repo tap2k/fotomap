@@ -67,7 +67,6 @@ export const itemInputSchema = z.object({
   url: safeUrl.nullish(),
   thumbUrl: safeUrl.nullish(),
   audioUrl: safeUrl.nullish(),
-  fileKeys: z.array(z.string().max(300)).max(5).optional(),
   title: z.string().max(500).optional(),
   caption: z.string().max(20000).optional(),
   tags: z.array(z.string().trim().min(1).max(60)).max(50).optional(),

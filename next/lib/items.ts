@@ -23,12 +23,12 @@ export function applyPrecision(
 export function sanitizeSubmission(input: ItemInput, channel: ChannelRow): ItemInput {
   const { lat, lng } = applyPrecision(input.lat, input.lng, channel.settings.submissions?.locationPrecision);
   const { contributor, is360 } = input.meta ?? {};
+  if (channel.settings.submissions?.consent && contributor?.consent !== true) fail(400, 'Consent is required');
   return {
     kind: input.kind,
     url: input.url,
     thumbUrl: input.thumbUrl,
     audioUrl: input.audioUrl,
-    fileKeys: input.fileKeys,
     title: input.title,
     caption: input.caption,
     takenAt: input.takenAt,
@@ -39,16 +39,25 @@ export function sanitizeSubmission(input: ItemInput, channel: ChannelRow): ItemI
   };
 }
 
-/** Verifies uploaded files belong to this channel and returns their real total size. */
-export async function measureFiles(channelId: string, keys: string[] = []) {
+type Urls = { url?: string | null; thumbUrl?: string | null; audioUrl?: string | null };
+
+/** Stored files an item uses, derived from its URLs. Only this channel's files count; anything else is an external link. */
+export function keysOf(channelId: string, urls: Urls): string[] {
+  const base = storage.publicUrl('');
+  const mine = storage.publicUrl(fileKeyPrefix(channelId));
+  return [urls.url, urls.thumbUrl, urls.audioUrl].flatMap((u) => (u?.startsWith(mine) ? [u.slice(base.length)] : []));
+}
+
+/** The item's stored files and their real total size (never trusts the client's numbers). */
+export async function measureFiles(channelId: string, urls: Urls) {
+  const fileKeys = keysOf(channelId, urls);
   let bytes = 0;
-  for (const key of keys) {
-    if (!key.startsWith(fileKeyPrefix(channelId))) fail(400, 'File does not belong to this channel');
+  for (const key of fileKeys) {
     const size = await storage.size(key);
     if (size == null) fail(400, 'Upload not found');
     bytes += size;
   }
-  return bytes;
+  return { fileKeys, bytes };
 }
 
 /** Turns validated input into rows ready to insert, positioned after `after`. */
@@ -72,8 +81,7 @@ export async function buildItems(channelId: string, inputs: ItemInput[], after: 
       position,
       title: title ?? '',
       thumbUrl,
-      fileKeys: input.fileKeys ?? [],
-      bytes: await measureFiles(channelId, input.fileKeys),
+      ...(await measureFiles(channelId, { ...input, thumbUrl })),
     });
   }
   return rows;
@@ -81,3 +89,5 @@ export async function buildItems(channelId: string, inputs: ItemInput[], after: 
 
 export const removedKeys = (before: ItemRow, after: string[] | undefined) =>
   after ? before.fileKeys.filter((k) => !after.includes(k)) : [];
+
+export const touchesFiles = (patch: Urls) => 'url' in patch || 'thumbUrl' in patch || 'audioUrl' in patch;

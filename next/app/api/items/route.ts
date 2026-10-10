@@ -4,7 +4,7 @@ import { db, items, type ItemRow } from '@/lib/db';
 import { fail, route } from '@/lib/http';
 import { getActor, requireChannel } from '@/lib/access';
 import { toItem, touch } from '@/lib/channel';
-import { measureFiles, removedKeys } from '@/lib/items';
+import { measureFiles, removedKeys, touchesFiles } from '@/lib/items';
 import { storage } from '@/lib/storage';
 import { assertAllowed } from '@/lib/plans';
 import { itemPatchSchema } from '@/lib/types';
@@ -28,15 +28,15 @@ export const PATCH = route(async (req) => {
   const updated = [];
   for (const { id, ...patch } of patches) {
     const before = rows.get(id)!;
-    const extra = patch.fileKeys ? { bytes: await measureFiles(before.channelId, patch.fileKeys) } : {};
-    if (extra.bytes && extra.bytes > before.bytes)
+    const extra = touchesFiles(patch) ? await measureFiles(before.channelId, { ...before, ...patch }) : undefined;
+    if (extra && extra.bytes > before.bytes)
       await assertAllowed(found.owners.get(before.channelId)!, { type: 'upload', bytes: extra.bytes - before.bytes });
     const [row] = await db
       .update(items)
       .set({ ...patch, ...extra, updatedAt: new Date() })
       .where(eq(items.id, id))
       .returning();
-    await storage.remove(removedKeys(before, patch.fileKeys));
+    await storage.remove(removedKeys(before, extra?.fileKeys));
     updated.push(toItem(row, { withNotes: true }));
   }
   await Promise.all([...new Set([...rows.values()].map((r) => r.channelId))].map(touch));
