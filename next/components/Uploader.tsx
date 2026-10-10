@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import { Camera, ImagePlus, Link2, Mic, Square, Type } from 'lucide-react';
 import { prepareFile, uploadPrepared, uploadBlobs } from '@/lib/upload';
 import type { ItemInput } from '@/lib/types';
 
@@ -66,10 +67,10 @@ export default function Uploader({
       >
         <div className="flex flex-wrap justify-center gap-2">
           <button type="button" className="btn-primary" onClick={() => files.current?.click()}>
-            Add photos, video or audio
+            <ImagePlus size={16} /> Add photos & videos
           </button>
           <button type="button" className="btn sm:hidden" onClick={() => camera.current?.click()}>
-            Camera
+            <Camera size={16} /> Take photo
           </button>
           <AudioRecorder
             onRecorded={async (blob) => {
@@ -87,13 +88,13 @@ export default function Uploader({
             }}
           />
           <button type="button" className="btn" onClick={() => setMode(mode === 'link' ? null : 'link')}>
-            Link
+            <Link2 size={16} /> Link
           </button>
           <button type="button" className="btn" onClick={() => setMode(mode === 'text' ? null : 'text')}>
-            Text
+            <Type size={16} /> Write
           </button>
         </div>
-        {!compact && <p className="mt-2 text-xs text-muted">or drop files here · location is read from photos automatically</p>}
+        {!compact && <p className="mt-3 text-sm text-muted">or drag files here · locations are read from photos automatically</p>}
         <input ref={files} type="file" multiple accept="image/*,video/*,audio/*" hidden onChange={(e) => e.target.files && addFiles(e.target.files)} />
         <input ref={camera} type="file" accept="image/*,video/*" capture="environment" hidden onChange={(e) => e.target.files && addFiles(e.target.files)} />
       </div>
@@ -110,7 +111,7 @@ export default function Uploader({
           }}
         >
           {mode === 'link' ? (
-            <input name="value" type="url" required placeholder="https://youtube.com/watch?v=…" className="input" autoFocus />
+            <input name="value" type="url" required placeholder="Paste a YouTube, Vimeo or web link" className="input" autoFocus />
           ) : (
             <textarea name="value" required placeholder="Write something…" className="input min-h-20" autoFocus />
           )}
@@ -140,7 +141,7 @@ export default function Uploader({
 }
 
 /** Microphone recording with MediaRecorder. */
-export function AudioRecorder({ onRecorded, label = 'Record audio' }: { onRecorded: (blob: Blob) => void; label?: string }) {
+export function AudioRecorder({ onRecorded, label = 'Record voice' }: { onRecorded: (blob: Blob) => void; label?: string }) {
   const [recording, setRecording] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const rec = useRef<{ recorder: MediaRecorder; timer: ReturnType<typeof setInterval> } | null>(null);
@@ -174,11 +175,11 @@ export function AudioRecorder({ onRecorded, label = 'Record audio' }: { onRecord
 
   return recording ? (
     <button type="button" className="btn-danger" onClick={stop}>
-      ■ Stop {Math.floor(seconds / 60)}:{String(seconds % 60).padStart(2, '0')}
+      <Square size={14} /> Stop {Math.floor(seconds / 60)}:{String(seconds % 60).padStart(2, '0')}
     </button>
   ) : (
     <button type="button" className="btn" onClick={start}>
-      ● {label}
+      <Mic size={16} /> {label}
     </button>
   );
 }

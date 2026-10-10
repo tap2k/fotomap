@@ -11,7 +11,10 @@ app/                 pages and route handlers
   edit/[id]          editor (owner/editor, or ?key= edit link)
   s/[token]          contributor submission page (submitter link)
   api/               JSON API (see below)
-components/          React components; views/ and editor/ subfolders
+components/          React components
+  views/             MapView, ReelView, GridView, StoryView (+ ChannelView switch)
+  editor/            Editor shell (tabs: Content, Inbox, Collect, Design, More), ItemPanel, ShareDialog, TagsDialog
+  Media, MapCanvas, Uploader, PlaceSearch, Modal, Toast, Text   shared building blocks
 lib/
   db/schema.ts       the 4 tables: users, channels, items, grants (+ sessions, login_tokens)
   types.ts           zod schemas + the Channel/Item shapes every view consumes
@@ -22,6 +25,7 @@ lib/
   storage.ts         S3-compatible or local-folder storage
   upload.ts          browser-side resize/EXIF/upload pipeline
   migrate-strapi.ts  pure transform from the old Strapi tables
+  templates.ts       new-project presets (settings only)
 drizzle/             generated SQL migrations (applied on startup by instrumentation.ts)
 scripts/             seed.ts, migrate-strapi.ts
 tests/               vitest (*.test.ts) and Playwright (e2e/)
@@ -36,6 +40,8 @@ tests/               vitest (*.test.ts) and Playwright (e2e/)
 - **Plan limits follow the channel owner**, not the actor. They are off unless `TIER_ENFORCEMENT=true`.
 - **File accounting is derived from URLs** (`keysOf`): the client never sends file keys or sizes; the server measures them.
 - **Ordering uses fractional indexing** (`position` text keys); a reorder updates one row.
+- **The UI says "project"; the code says `channel`.** Keep user-facing wording plain (Hidden/Visible, Inbox, Collect).
+- **The editor autosaves.** Panels call `editor.updateItems` / `updateChannel` / `updateSettings` (optimistic, debounced, batched); the header shows Saving…/Saved. No Save buttons, no `alert()`/`prompt()` — use `useToast()` and `Modal`.
 - Submissions are sanitised server-side (`sanitizeSubmission`): forced pending, location precision applied, consent enforced.
 
 ## Commands

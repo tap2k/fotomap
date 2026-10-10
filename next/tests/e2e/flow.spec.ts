@@ -13,39 +13,44 @@ async function signIn(page: Page, email: string) {
   await page.goto(`/api/auth/verify?token=${token}&next=/`);
 }
 
+const saved = (page: Page) => expect(page.getByText('Saved', { exact: true })).toBeVisible({ timeout: 10_000 });
+
 test('collect → review → publish → view → export', async ({ page, browser }) => {
   await signIn(page, 'researcher@example.org');
-  await expect(page.getByRole('heading', { name: 'Your channels' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Your projects' })).toBeVisible();
 
-  // Create a channel.
-  await page.getByPlaceholder(/Title, e.g./).fill('Neighbourhood Voices');
-  await page.getByRole('button', { name: 'New channel' }).click();
+  // Create a project from the Photovoice template.
+  await page.getByRole('button', { name: 'New project' }).click();
+  await page.getByRole('button', { name: /Photovoice/ }).click();
+  await page.getByPlaceholder('Name your photovoice').fill('Neighbourhood Voices');
+  await page.getByRole('button', { name: 'Create' }).click();
   await page.waitForURL(/\/edit\//);
   const channelId = page.url().split('/edit/')[1];
+  await expect(page.getByText('Add your media')).toBeVisible(); // first-run guide
 
   // Upload a geotagged photo: location comes from EXIF, resized in the browser.
   await page.locator('input[type=file][multiple]').setInputFiles(path.join(import.meta.dirname, 'fixtures/london.jpg'));
-  const row = page.locator('li', { hasText: 'Untitled image' });
-  await expect(row).toBeVisible({ timeout: 20_000 });
-  await expect(row.getByTitle('Has location')).toBeVisible();
+  const card = page.locator('ul li').filter({ hasText: 'Untitled' }).first();
+  await expect(card).toBeVisible({ timeout: 20_000 });
+  await expect(card.getByTitle('No location')).toHaveCount(0);
 
-  // Edit it.
-  await row.locator('button').nth(1).click();
-  await page.getByText('Title', { exact: true }).locator('..').locator('input').fill('Big Ben');
-  await page.getByText('Tags (comma separated)').locator('..').locator('input').fill('landmark, tourism');
-  await page.getByRole('button', { name: 'Save', exact: true }).click();
-  await expect(page.locator('li', { hasText: 'Big Ben' })).toBeVisible();
+  // Edit it in the side panel: changes autosave.
+  await card.getByRole('button', { name: /Untitled/ }).click();
+  await page.getByPlaceholder('Give it a title').fill('Big Ben');
+  await page.getByLabel('Add tag').fill('landmark');
+  await page.getByLabel('Add tag').press('Enter');
+  await page.getByLabel('Add tag').fill('tourism');
+  await page.getByLabel('Add tag').press('Enter');
+  await saved(page);
+  await page.getByRole('button', { name: 'Done' }).click();
+  await expect(page.locator('ul li', { hasText: 'Big Ben' })).toBeVisible();
 
-  // Ask contributors for consent.
-  await page.getByRole('button', { name: 'Settings' }).click();
-  await page.getByPlaceholder(/I agree that my contribution/).fill('I agree my contribution may be published.');
-  await page.getByRole('button', { name: 'Save settings' }).click();
-  await expect(page.getByText('Saved')).toBeVisible();
-
-  // Create a submission link.
-  await page.getByRole('button', { name: 'Sharing' }).click();
-  await page.getByRole('button', { name: 'New submission link' }).click();
-  const submitUrl = await page.locator('input[readonly]').first().inputValue();
+  // The template pre-filled consent; open contributions.
+  await page.getByRole('tab', { name: /Collect/ }).click();
+  await expect(page.getByPlaceholder(/Optional. If set/)).toHaveValue(/I took this photo/);
+  await page.getByRole('switch').click();
+  await expect(page.getByRole('switch')).toBeChecked();
+  const submitUrl = await page.getByLabel('Contribution link').inputValue();
   expect(submitUrl).toMatch(/\/s\//);
 
   // An anonymous contributor sends a text note.
@@ -53,7 +58,7 @@ test('collect → review → publish → view → export', async ({ page, browse
   const guest = await anon.newPage();
   await guest.goto(submitUrl);
   await expect(guest.getByRole('heading', { name: 'Neighbourhood Voices' })).toBeVisible();
-  await guest.getByRole('button', { name: 'Text' }).click();
+  await guest.getByRole('button', { name: 'Write' }).click();
   await guest.getByPlaceholder('Write something…').fill('The bakery on the corner closed last year.');
   await guest.getByRole('button', { name: 'Add', exact: true }).click();
   const send = guest.getByRole('button', { name: /Send 1 item/ });
@@ -75,9 +80,15 @@ test('collect → review → publish → view → export', async ({ page, browse
   await expect(guest.getByText('bakery')).toHaveCount(0);
 
   await page.reload();
-  await page.getByRole('button', { name: /Review \(1\)/ }).click();
-  await page.getByRole('button', { name: 'Approve' }).click();
-  await expect(page.getByRole('button', { name: 'Review', exact: true })).toBeVisible();
+  await page.getByRole('tab', { name: /Inbox/ }).click();
+  await page.getByRole('button', { name: 'Approve', exact: true }).click();
+  await expect(page.getByText('No contributions waiting')).toBeVisible();
+  await saved(page);
+
+  // Share dialog: the project is viewable by link.
+  await page.getByRole('button', { name: 'Share' }).click();
+  await expect(page.getByLabel('View link')).toHaveValue(new RegExp(`/c/${slug}$`));
+  await page.keyboard.press('Escape');
 
   // Published views.
   await guest.goto(`/c/${slug}/reel?i=1`);
@@ -87,7 +98,7 @@ test('collect → review → publish → view → export', async ({ page, browse
   await guest.goto(`/embed/${slug}/grid`);
   await expect(guest.getByText('Neighbourhood Voices · Fotomap')).toBeVisible();
   await guest.goto(`/c/${slug}/map`);
-  await expect(guest.locator('canvas.maplibregl-canvas, .maplibregl-map').first()).toBeAttached();
+  await expect(guest.locator('.maplibregl-map').first()).toBeAttached();
 
   // Export.
   const csv = await (await page.request.get(`/api/channels/${channelId}/export?format=csv`)).text();

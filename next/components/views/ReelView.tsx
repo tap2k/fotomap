@@ -62,7 +62,7 @@ export default function ReelView({ channel, start = 0 }: { channel: Channel; sta
         touchX.current = null;
       }}
     >
-      <div key={item.id} className="fade-in h-full w-full">
+      <div key={item.id} className="fade-slow h-full w-full">
         <Media item={item} autoplay={playing} onEnded={() => playing && go(1)} />
       </div>
       {hasText && showCaption && (

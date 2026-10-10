@@ -29,8 +29,6 @@ export const PATCH = route<Ctx>(async (req, { params }) => {
   }
   if (input.settings?.overlays?.length && !channel.settings.overlays?.length)
     await assertAllowed(channel.ownerId, { type: 'feature', feature: 'overlays' });
-  if (input.settings?.mapStyle && input.settings.mapStyle !== channel.settings.mapStyle)
-    await assertAllowed(channel.ownerId, { type: 'feature', feature: 'customMap' });
   const [updated] = await db
     .update(channels)
     .set({ ...input, updatedAt: new Date() })

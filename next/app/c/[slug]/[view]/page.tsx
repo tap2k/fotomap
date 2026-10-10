@@ -4,10 +4,10 @@ import { notFound } from 'next/navigation';
 import ChannelView, { fillsScreen } from '@/components/views/ChannelView';
 import { getViewable } from '@/lib/pages';
 import { VIEWS, type View } from '@/lib/types';
+import { Pencil } from 'lucide-react';
+import { VIEW_LABELS } from '@/components/viewMeta';
 
 type Props = { params: Promise<{ slug: string; view: string }>; searchParams: Promise<{ key?: string; i?: string }> };
-
-const LABELS: Record<View, string> = { map: 'Map', reel: 'Slideshow', grid: 'Grid', story: 'Story' };
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { channel } = await getViewable((await params).slug, (await searchParams).key);
@@ -42,15 +42,23 @@ export default async function ChannelPage({ params, searchParams }: Props) {
           )}
           <h1 className="truncate font-semibold">{channel.title}</h1>
         </div>
-        <nav className="flex shrink-0 gap-1 text-sm">
-          {VIEWS.map((v) => (
-            <Link key={v} href={`/c/${slug}/${v}${q}`} className={`rounded px-2 py-1 ${v === view ? 'bg-accent text-accent-fg' : 'hover:bg-card'}`}>
-              {LABELS[v]}
+        <nav className="flex shrink-0 gap-0.5 text-sm" aria-label="Views">
+          {VIEW_LABELS.map(({ view: v, label, Icon }) => (
+            <Link
+              key={v}
+              href={`/c/${slug}/${v}${q}`}
+              title={label}
+              aria-current={v === view ? 'page' : undefined}
+              className={`flex items-center gap-1.5 rounded-md px-2 py-1.5 ${v === view ? 'bg-accent text-accent-fg' : 'text-muted hover:bg-card hover:text-fg'}`}
+            >
+              <Icon size={16} />
+              <span className="hidden md:inline">{label}</span>
             </Link>
           ))}
           {canEdit && (
-            <Link href={`/edit/${channel.id}`} className="ml-1 rounded border border-line px-2 py-1 hover:bg-card">
-              Edit
+            <Link href={`/edit/${channel.id}`} className="ml-1 flex items-center gap-1.5 rounded-md border border-line px-2 py-1.5 hover:bg-card" title="Edit">
+              <Pencil size={16} />
+              <span className="hidden md:inline">Edit</span>
             </Link>
           )}
         </nav>

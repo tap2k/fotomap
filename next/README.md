@@ -9,11 +9,11 @@ This is Fotomap v2: a single Next.js app with an SQLite database. It replaces th
 ```bash
 npm install
 cp .env.example .env     # defaults work for local development
-npm run seed             # optional demo channel
+npm run seed             # optional demo project
 npm run dev              # http://localhost:3000
 ```
 
-Sign in with any email. Without SMTP configured, the sign-in link is printed in the terminal. After `npm run seed`, sign in as `demo@example.org` to see the demo channel.
+Sign in with any email. Without SMTP configured, the sign-in link is printed in the terminal. After `npm run seed`, sign in as `demo@example.org` to see the demo project.
 
 The database (`.data/fotomap.db`) is created and migrated automatically on startup. Uploads go to `.data/uploads` unless S3 is configured.
 
@@ -21,12 +21,12 @@ The database (`.data/fotomap.db`) is created and migrated automatically on start
 
 | Concept | What it is |
 |---|---|
-| **Channel** | A project. It holds items and can contain sub-channels. Visibility: private, unlisted or public. |
+| **Project** (`channel` in code) | Holds items and can contain sub-projects. Visibility: private, anyone with the link, or public. New projects start from a template (photo map, photovoice, participatory map, oral history, story map). |
 | **Item** | A photo, video, audio clip, link (YouTube, Vimeo, any URL) or text card, with an optional location, tags, caption and narration. Status: published, draft or pending. |
-| **Grant** | Who can do what. Either a person (owner, editor, viewer) or a share link (editor, viewer, submitter). Grants on a channel apply to all of its sub-channels. |
-| **Views** | Map, slideshow (`reel`), grid and story, all rendered from the same channel data. `/embed/...` gives the same views without page chrome, for iframes. |
+| **Grant** | Who can do what. Either a person (owner, editor, viewer) or a share link (editor, viewer, submitter). Grants on a project apply to all of its sub-projects. |
+| **Views** | Map, slideshow (`reel`), grid and story, all rendered from the same project data. `/embed/...` gives the same views without page chrome, for iframes. |
 
-Typical flow: create a channel, create a **submission link** (or print its QR code) in *Sharing*, and let contributors send things from their phones without an account. Approve submissions in *Review*. Share the map or story, and export everything as CSV, GeoJSON or a ZIP.
+Typical flow: create a project from a template, turn on contributions in *Collect* (copy the link or print the QR code), and let participants send things from their phones without an account. Approve what arrives in *Inbox*, caption and tag it in *Content*, pick a look in *Design*, then press **Share**. Everything saves automatically. Export as CSV, GeoJSON or a ZIP from *More*.
 
 Heavy work happens in the browser: images are resized to web sizes, EXIF location, date and 360° info are read, and video thumbnails are captured. Files upload straight to storage through signed URLs. The server stores metadata and checks permissions and limits.
 
@@ -53,7 +53,11 @@ STRAPI_MEDIA_URL=https://your-old-strapi-host \
 npm run migrate:strapi
 ```
 
-This imports users (merged by email), channels (same `uniqueID`, so old public links keep working), content, tags and their colors, overlays, cover images, tilesets, owners and editors. Files are not copied; items keep pointing at their existing URLs. Old `privateID` links stop working by design: they could be forged. Owners create new share links in *Sharing*. Old `/map?channelid=…` and `/reel?channelid=…` URLs redirect.
+This imports users (merged by email), projects (same `uniqueID`, so old public links keep working), content, tags and their colors, overlays, cover images, tilesets, owners and editors. Files are not copied; items keep pointing at their existing URLs. Old `privateID` links stop working by design: they could be forged. Owners turn contributions back on in *Collect* and share again with **Share**. Old `/map?channelid=…` and `/reel?channelid=…` URLs redirect.
+
+## Not built yet
+
+Billing (Stripe) and video generation are left for later. Plan limits exist (`lib/plans.ts`) but are off unless `TIER_ENFORCEMENT=true`.
 
 ## Development
 

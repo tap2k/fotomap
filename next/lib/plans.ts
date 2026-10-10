@@ -5,7 +5,7 @@ import { fail } from '@/lib/http';
 const MB = 1024 * 1024;
 const UNLIMITED = Number.POSITIVE_INFINITY;
 
-export type Feature = 'collaboration' | 'overlays' | 'videoGeneration' | 'customMap';
+export type Feature = 'collaboration' | 'overlays';
 
 export const PLANS = {
   free: { name: 'Free', storage: 250 * MB, channels: 5, fileSize: 20 * MB, features: [] as Feature[] },
@@ -14,21 +14,21 @@ export const PLANS = {
     storage: 5120 * MB,
     channels: 25,
     fileSize: 100 * MB,
-    features: ['collaboration', 'overlays', 'customMap'] as Feature[],
+    features: ['collaboration', 'overlays'] as Feature[],
   },
   pro: {
     name: 'Pro',
     storage: 51200 * MB,
     channels: UNLIMITED,
     fileSize: 1024 * MB,
-    features: ['collaboration', 'overlays', 'customMap', 'videoGeneration'] as Feature[],
+    features: ['collaboration', 'overlays'] as Feature[],
   },
   enterprise: {
     name: 'Enterprise',
     storage: UNLIMITED,
     channels: UNLIMITED,
     fileSize: 4096 * MB,
-    features: ['collaboration', 'overlays', 'customMap', 'videoGeneration'] as Feature[],
+    features: ['collaboration', 'overlays'] as Feature[],
   },
 } satisfies Record<User['plan'], unknown>;
 

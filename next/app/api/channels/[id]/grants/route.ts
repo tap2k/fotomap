@@ -4,7 +4,7 @@ import { db, grants, users } from '@/lib/db';
 import { fail, route } from '@/lib/http';
 import { requireChannel } from '@/lib/access';
 import { assertAllowed } from '@/lib/plans';
-import { newId, newToken, sha256 } from '@/lib/crypto';
+import { newId, sha256, sign } from '@/lib/crypto';
 import { appUrl } from '@/lib/auth';
 import { sendMail } from '@/lib/mail';
 
@@ -26,8 +26,26 @@ export const GET = route<Ctx>(async (_req, { params }) => {
     .from(grants)
     .leftJoin(users, eq(users.id, grants.userId))
     .where(eq(grants.channelId, channel.id))
-    .then((rows) => rows.map((r) => ({ ...r, email: r.userEmail ?? r.email, isLink: !!r.isLink, userEmail: undefined })));
+    .then((rows) =>
+      rows.map((r) => ({
+        ...r,
+        email: r.userEmail ?? r.email,
+        isLink: !!r.isLink,
+        url: r.isLink ? linkUrl(r.id, r.role, channel) : null,
+        userEmail: undefined,
+      })),
+    );
 });
+
+// A link's secret is derived from its id and the server SECRET, so managers can see it
+// again (e.g. to reprint a QR code) while the database only stores its hash.
+const linkToken = (grantId: string) => sign(`link:${grantId}`);
+
+function linkUrl(grantId: string, role: string, channel: { id: string; slug: string }) {
+  const token = linkToken(grantId);
+  const path = role === 'submitter' ? `/s/${token}` : role === 'editor' ? `/edit/${channel.id}?key=${token}` : `/c/${channel.slug}?key=${token}`;
+  return appUrl() + path;
+}
 
 const createSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('invite'), email: z.email(), role: z.enum(['owner', 'editor', 'viewer']) }),
@@ -42,10 +60,9 @@ export const POST = route<Ctx>(async (req, { params }) => {
     await assertAllowed(channel.ownerId, { type: 'feature', feature: 'collaboration' });
 
   if (input.type === 'link') {
-    const token = newToken();
-    await db.insert(grants).values({ id: newId(), channelId: channel.id, role: input.role, tokenHash: sha256(token), label: input.label });
-    const path = input.role === 'submitter' ? `/s/${token}` : input.role === 'editor' ? `/edit/${channel.id}?key=${token}` : `/c/${channel.slug}?key=${token}`;
-    return { url: appUrl() + path };
+    const id = newId();
+    await db.insert(grants).values({ id, channelId: channel.id, role: input.role, tokenHash: sha256(linkToken(id)), label: input.label });
+    return { url: linkUrl(id, input.role, channel) };
   }
 
   const email = input.email.toLowerCase();

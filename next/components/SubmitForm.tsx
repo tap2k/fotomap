@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { CheckCircle2, MapPin, Send, Trash2 } from 'lucide-react';
 import Uploader from '@/components/Uploader';
 import Text from '@/components/Text';
 import { api, setShareKey } from '@/lib/api';
@@ -46,7 +47,8 @@ export default function SubmitForm({ channelId, token, consent, askName, locatio
 
   if (state === 'done')
     return (
-      <div className="space-y-3 rounded-lg bg-card p-6 text-center">
+      <div className="flex flex-col items-center gap-3 rounded-xl bg-card p-8 text-center">
+        <CheckCircle2 size={44} className="text-accent" />
         <p className="text-lg font-medium">Thank you! Your contribution was received.</p>
         <p className="text-sm text-muted">The organisers will review it before it appears.</p>
         <button className="btn" onClick={() => setState('editing')}>Add more</button>
@@ -54,11 +56,11 @@ export default function SubmitForm({ channelId, token, consent, askName, locatio
     );
 
   return (
-    <div className="space-y-5">
+    <div className={`space-y-5 ${drafts.length ? 'pb-56' : ''}`}>
       <Uploader channelId={channelId} onAdd={(inputs) => setDrafts((d) => [...d, ...inputs])} />
 
       {drafts.map((d, i) => (
-        <div key={i} className="flex gap-3 rounded-lg border border-line p-3">
+        <div key={i} className="flex gap-3 rounded-xl border border-line p-3">
           <div className="h-20 w-20 shrink-0 overflow-hidden rounded bg-card text-center text-xs leading-[5rem] text-muted">
             {d.thumbUrl || d.kind === 'image' ? <img src={(d.thumbUrl ?? d.url)!} alt="" className="h-full w-full object-cover" /> : d.kind}
           </div>
@@ -69,18 +71,23 @@ export default function SubmitForm({ channelId, token, consent, askName, locatio
               {locationPrecision === 'none' ? (
                 <span>Location is not collected</span>
               ) : d.lat != null ? (
-                <span>📍 Location attached{locationPrecision === 'approximate' ? ' (rounded to ~1 km)' : ''}</span>
+                <span className="flex items-center gap-1">
+                  <MapPin size={12} /> Location attached{locationPrecision === 'approximate' ? ' (rounded to ~1 km)' : ''}
+                </span>
               ) : (
                 <button type="button" className="underline" onClick={() => locate(i)}>Add my current location</button>
               )}
-              <button type="button" className="underline" onClick={() => setDrafts((x) => x.filter((_, j) => j !== i))}>Remove</button>
+              <button type="button" className="flex items-center gap-1 underline" onClick={() => setDrafts((x) => x.filter((_, j) => j !== i))}>
+                <Trash2 size={12} /> Remove
+              </button>
             </div>
           </div>
         </div>
       ))}
 
       {drafts.length > 0 && (
-        <div className="space-y-3 rounded-lg bg-card p-4">
+        <div className="fixed inset-x-0 bottom-0 z-20 space-y-3 border-t border-line bg-bg/95 p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] backdrop-blur">
+          <div className="mx-auto max-w-xl space-y-3">
           {askName && (
             <div>
               <label className="label" htmlFor="name">Your name (optional)</label>
@@ -95,8 +102,9 @@ export default function SubmitForm({ channelId, token, consent, askName, locatio
           )}
           {error && <p className="text-sm text-red-600">{error}</p>}
           <button className="btn-primary w-full py-2.5" disabled={!agreed || state === 'sending'} onClick={submit}>
-            {state === 'sending' ? 'Sending…' : `Send ${drafts.length} item${drafts.length === 1 ? '' : 's'}`}
+            <Send size={16} /> {state === 'sending' ? 'Sending…' : `Send ${drafts.length} item${drafts.length === 1 ? '' : 's'}`}
           </button>
+          </div>
         </div>
       )}
     </div>

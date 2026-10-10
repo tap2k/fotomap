@@ -30,7 +30,7 @@ export default async function EditPage({ params, searchParams }: Props) {
   if (enforcing()) {
     const [owner] = await db.select().from(users).where(eq(users.id, row.ownerId));
     const p = PLANS[owner?.plan ?? 'free'];
-    plan = { name: p.name, storage: p.storage, used: (await usageFor(row.ownerId)).storage, features: p.features };
+    plan = { name: p.name, storage: p.storage, used: (await usageFor(row.ownerId)).storage };
   }
 
   return (
@@ -40,7 +40,6 @@ export default async function EditPage({ params, searchParams }: Props) {
       isOwner={roles.includes('owner')}
       signedIn={!!actor.user}
       appUrl={appUrl()}
-      videoEnabled={!!process.env.VIDEO_SERVER_URL}
       plan={plan}
     />
   );

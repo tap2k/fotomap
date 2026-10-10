@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { getUser } from '@/lib/auth';
 import { myChannels, publicChannels } from '@/lib/listing';
 import ChannelCards from '@/components/ChannelCards';
-import NewChannel from '@/components/NewChannel';
+import NewProject from '@/components/NewProject';
 
 const USE_CASES = [
   ['Participatory mapping', 'Gather local knowledge and see it on a shared multimedia map.'],
@@ -40,12 +40,17 @@ export default async function Home() {
       <main className="mx-auto max-w-6xl space-y-12 px-4 py-8">
         {user ? (
           <section className="space-y-4">
-            <h1 className="text-2xl font-semibold">Your channels</h1>
-            <NewChannel />
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl font-semibold">Your projects</h1>
+              {mine.length > 0 && <NewProject />}
+            </div>
             {mine.length ? (
               <ChannelCards channels={mine} href={(c) => `/edit/${c.id}`} />
             ) : (
-              <p className="text-muted">Create your first channel to start collecting.</p>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                <NewProject big />
+                <p className="col-span-1 self-center text-sm text-muted sm:col-span-2">Start your first project: a photo map, a photovoice project, a community map, an oral history or a story map.</p>
+              </div>
             )}
           </section>
         ) : (
@@ -82,7 +87,7 @@ export default async function Home() {
 
         {featured.length > 0 && (
           <section className="space-y-4">
-            <h2 className="text-xl font-semibold">Public channels</h2>
+            <h2 className="text-xl font-semibold">Explore public projects</h2>
             <ChannelCards channels={featured} href={(c) => `/c/${c.slug}`} />
           </section>
         )}

@@ -40,7 +40,7 @@ describe('checkLimit', () => {
   });
   it('gates features by plan', () => {
     expect(checkLimit(free, { storage: 0, channels: 0 }, { type: 'feature', feature: 'overlays' })).not.toBeNull();
-    expect(checkLimit(PLANS.pro, { storage: 0, channels: 0 }, { type: 'feature', feature: 'videoGeneration' })).toBeNull();
+    expect(checkLimit(PLANS.pro, { storage: 0, channels: 0 }, { type: 'feature', feature: 'overlays' })).toBeNull();
   });
   it('treats unlimited plans as unlimited', () => {
     expect(checkLimit(PLANS.enterprise, { storage: 1e15, channels: 1e6 }, { type: 'channel' })).toBeNull();
