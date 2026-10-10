@@ -1,12 +1,9 @@
-name: v2
+name: CI
 on:
   push:
-    paths: ['next/**', '.github/workflows/v2.yml']
+    branches: [main]
   pull_request:
-    paths: ['next/**', '.github/workflows/v2.yml']
-defaults:
-  run:
-    working-directory: next
+    branches: [main]
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -16,7 +13,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: next/package-lock.json
+          cache-dependency-path: package-lock.json
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
