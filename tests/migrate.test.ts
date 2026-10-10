@@ -44,7 +44,7 @@ describe('Strapi migration', () => {
     expect(item('Photo one').audioUrl).toMatch(/\/uploads\//);
     expect(item('Photo one').thumbUrl).toMatch(/small_/);
     expect(item('Photo two')).toMatchObject({ tags: ['water', 'food'], meta: { contributor: { name: 'ed' } } });
-    expect(item('Photo one').meta.contributor).toBeUndefined(); // no narrator name set
+    expect(item('Photo one').meta?.contributor).toBeUndefined(); // no narrator name set
     expect(item('Photo two').bytes).toBeGreaterThan(100_000);
     expect(item('A video link')).toMatchObject({ kind: 'embed', meta: { start: 12, duration: 30 } });
     expect(item('A video link').thumbUrl).toContain('i.ytimg.com');
