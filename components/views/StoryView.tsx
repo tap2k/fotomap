@@ -65,7 +65,7 @@ export default function StoryView({ channel }: { channel: Channel }) {
             data-index={i}
             className={`mx-4 mb-[40dvh] rounded-xl bg-bg p-4 shadow-lg transition-opacity sm:mx-8 ${active === i ? 'opacity-100' : 'opacity-60'}`}
           >
-            <ItemCard item={item} />
+            <ItemCard item={item} pattern={settings.pattern} />
           </section>
         ))}
       </div>

@@ -20,7 +20,7 @@ export default function Modal({ title, onClose, children, wide = false }: { titl
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={`fade-in max-h-[92dvh] w-full overflow-y-auto rounded-t-2xl bg-bg p-5 shadow-2xl sm:rounded-2xl ${wide ? 'sm:max-w-2xl' : 'sm:max-w-lg'}`}
+        className={`fade-in max-h-[92dvh] w-full overflow-y-auto rounded-t-2xl bg-bg p-5 text-left text-base font-normal text-fg shadow-2xl sm:rounded-2xl ${wide ? 'sm:max-w-2xl' : 'sm:max-w-lg'}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">

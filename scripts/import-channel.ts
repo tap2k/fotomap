@@ -5,11 +5,16 @@
 //     [--settings scripts/presets/bihar.json] [--domain bihar.example.org]
 
 import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import { eq } from 'drizzle-orm';
 import { db, channels } from '../lib/db';
 import { apiToSnapshot, transformStrapi } from '../lib/migrate-strapi';
 import { channelSettingsSchema } from '../lib/types';
 import { insertMigrated } from './insert-migrated';
+import { storage } from '../lib/storage';
+import { newId } from '../lib/crypto';
+import { mimeFromName } from '../lib/mime';
+import { fileKeyPrefix } from '../lib/items';
 
 const arg = (name: string) => {
   const i = process.argv.indexOf(`--${name}`);
@@ -40,7 +45,8 @@ async function main() {
 
   const root = out.channels.find((c) => c.slug === slug)!;
   const presetFile = arg('settings');
-  const preset = presetFile ? channelSettingsSchema.parse(JSON.parse(readFileSync(presetFile, 'utf8'))) : {};
+  const raw = presetFile ? JSON.parse(readFileSync(presetFile, 'utf8')) : {};
+  const preset = channelSettingsSchema.parse(presetFile ? await uploadAssets(raw, path.dirname(presetFile), root.id) : {});
   await db
     .update(channels)
     .set({ settings: { ...root.settings, ...preset }, ...(arg('domain') && { domain: arg('domain')!.toLowerCase() }) })
@@ -48,6 +54,20 @@ async function main() {
 
   console.log(`Imported "${root.title}": ${out.channels.length} project(s), ${out.items.length} items. Owner: ${owner}`);
   for (const w of out.warnings) console.log(`  ! ${w}`);
+}
+
+/** Replaces "file:relative/path" strings in a preset with uploaded files in the project's storage. */
+async function uploadAssets(value: unknown, dir: string, channelId: string): Promise<unknown> {
+  if (typeof value === 'string' && value.startsWith('file:')) {
+    const file = path.resolve(dir, value.slice(5));
+    const key = `${fileKeyPrefix(channelId)}${newId(16)}${path.extname(file).toLowerCase()}`;
+    await storage.put(key, readFileSync(file), mimeFromName(file));
+    return storage.publicUrl(key);
+  }
+  if (Array.isArray(value)) return Promise.all(value.map((v) => uploadAssets(v, dir, channelId)));
+  if (value && typeof value === 'object')
+    return Object.fromEntries(await Promise.all(Object.entries(value).map(async ([k, v]) => [k, await uploadAssets(v, dir, channelId)])));
+  return value;
 }
 
 main().then(

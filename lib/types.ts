@@ -36,7 +36,16 @@ export const channelSettingsSchema = z
     interval: z.number().int().min(1).max(120).optional(), // reel seconds per still
     showTitle: z.boolean().optional(),
     font: z.enum(FONTS).optional(), // heading font
-    welcome: z.object({ enabled: z.boolean().optional(), tagline: z.string().max(300).optional() }).optional(),
+    welcome: z
+      .object({
+        enabled: z.boolean().optional(),
+        tagline: z.string().max(300).optional(),
+        layout: z.enum(['center', 'side']).optional(),
+        decoration: safeUrl.optional(), // transparent PNG/WebP layered over the cover
+      })
+      .optional(),
+    accent: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(), // brand color, overrides the theme's
+    pattern: safeUrl.optional(), // decorative band on story panels and the About pop-up
     about: z.string().max(20000).optional(), // "About" pop-up on public pages
     analyticsId: z.string().regex(/^G-[A-Z0-9]{4,20}$/).optional(), // Google Analytics 4
     submissions: z

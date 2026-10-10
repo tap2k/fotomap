@@ -1,11 +1,15 @@
 {
   "defaultView": "map",
   "theme": "paper",
-  "font": "script",
+  "font": "rounded",
   "mapStyle": "https://tiles.openfreemap.org/styles/positron",
   "welcome": {
     "enabled": true,
-    "tagline": "Everyone has a story to tell"
+    "tagline": "Everyone has a story to tell",
+    "layout": "side",
+    "decoration": "file:bihar/decoration.webp"
   },
-  "about": "**Our mission**\nStories embody our experiences and journeys, providing narratives behind our myths, legends, and folktales. Represent creates a platform for sharing stories of all types from diverse places and people.\n\n**About the project**\nThe project was founded by Vatsala Shrivastava, a journalist and storyteller from Bihar currently based in Bangalore, and Tapan Parikh, a professor at Cornell Tech, based on their mutual love of stories, culture and local knowledge of all kinds.\n\n**Rights of storytellers**\nNarrators retain all rights to their stories, including in their spoken, transcripted and translated forms. All narrators have given their consent for recording and publishing their stories. The artwork and photos used with the stories are either our own or commissioned work.\n\n**Our vision**\nOur goal is to build a multi-lingual, multi-media cultural atlas of stories, including myths, poems, songs, local folk tales and histories - that can be freely shared while respecting the rights of content producers.\n\n**Our collections**\nStream these stories on [Soundcloud](https://soundcloud.com/representorg/sets/stories-of-bihar) or explore more collections at [stories.represent.org](http://stories.represent.org)\n\nThanks to Nagma Khan for our Bihar landing page illustration."
+  "about": "**Our mission**\nStories embody our experiences and journeys, providing narratives behind our myths, legends, and folktales. Represent creates a platform for sharing stories of all types from diverse places and people.\n\n**About the project**\nThe project was founded by Vatsala Shrivastava, a journalist and storyteller from Bihar currently based in Bangalore, and Tapan Parikh, a professor at Cornell Tech, based on their mutual love of stories, culture and local knowledge of all kinds.\n\n**Rights of storytellers**\nNarrators retain all rights to their stories, including in their spoken, transcripted and translated forms. All narrators have given their consent for recording and publishing their stories. The artwork and photos used with the stories are either our own or commissioned work.\n\n**Our vision**\nOur goal is to build a multi-lingual, multi-media cultural atlas of stories, including myths, poems, songs, local folk tales and histories - that can be freely shared while respecting the rights of content producers.\n\n**Our collections**\nStream these stories on [Soundcloud](https://soundcloud.com/representorg/sets/stories-of-bihar) or explore more collections at [stories.represent.org](http://stories.represent.org)\n\nThanks to Nagma Khan for our Bihar landing page illustration.",
+  "accent": "#193b53",
+  "pattern": "file:bihar/pattern.webp"
 }

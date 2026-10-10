@@ -71,7 +71,7 @@ export default function MapCanvas({
       attributionControl: { compact: true },
     });
     mapRef.current = map;
-    if (interactive) map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
+    if (interactive) map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-left');
 
     map.on('load', () => {
       map.addSource('points', { type: 'geojson', data: toGeoJson(latest.current.points), cluster, clusterRadius: 40 });

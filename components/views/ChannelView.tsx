@@ -5,11 +5,11 @@ import StoryView from '@/components/views/StoryView';
 import type { Channel, View } from '@/lib/types';
 
 /** Picks the view. Every view is just a function of the same Channel. */
-export default function ChannelView({ channel, view, prefix, start, keyParam }: { channel: Channel; view: View; prefix: string; start?: number; keyParam?: string }) {
+export default function ChannelView({ channel, view, prefix, start, keyParam, item }: { channel: Channel; view: View; prefix: string; start?: number; keyParam?: string; item?: string }) {
   const q = keyParam ? `?key=${encodeURIComponent(keyParam)}` : '';
   switch (view) {
     case 'map':
-      return <MapView channel={channel} prefix={prefix} />;
+      return <MapView channel={channel} prefix={prefix} initialItem={item} />;
     case 'reel':
       return <ReelView channel={channel} start={start} />;
     case 'grid':

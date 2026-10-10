@@ -179,3 +179,10 @@ body {
   color: var(--accent);
   text-decoration: underline;
 }
+
+/* Phones pinch to zoom; the buttons would sit on top of the story panel. */
+@media (max-width: 640px) {
+  .maplibregl-ctrl-bottom-left .maplibregl-ctrl-group {
+    display: none;
+  }
+}

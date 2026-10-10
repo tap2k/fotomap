@@ -2,13 +2,15 @@
 
 import Media from '@/components/Media';
 import Text from '@/components/Text';
+import Pattern from '@/components/site/Pattern';
 import type { Item } from '@/lib/types';
 
 /** Media + title + caption + tags. Used by the map panel and the story chapters. */
-export default function ItemCard({ item, autoplay = false }: { item: Item; autoplay?: boolean }) {
+export default function ItemCard({ item, autoplay = false, pattern }: { item: Item; autoplay?: boolean; pattern?: string }) {
   const tall = item.kind === 'text';
   return (
     <article>
+      <Pattern url={pattern} className="mb-3 h-10 rounded-t-md" />
       {!tall && (
         <div className="aspect-[4/3] w-full overflow-hidden rounded-md bg-black/5">
           <Media item={item} autoplay={autoplay} />

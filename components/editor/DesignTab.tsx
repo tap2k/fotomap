@@ -98,6 +98,17 @@ export default function DesignTab({ editor }: { editor: EditorApi }) {
             );
           })}
         </div>
+        <Field label="Brand color">
+          <div className="flex flex-wrap items-center gap-2">
+            <input type="color" value={s.accent ?? THEME_SWATCH[s.theme ?? 'light'][1]} onChange={(e) => set({ accent: e.target.value })} className="h-8 w-12" aria-label="Brand color" />
+            <span className="text-xs text-muted">Buttons, highlights and the active tab. {s.accent ? '' : 'Using the theme’s color.'}</span>
+            {s.accent && (
+              <button className="text-xs underline" onClick={() => set({ accent: undefined })}>
+                Use theme color
+              </button>
+            )}
+          </div>
+        </Field>
       </Section>
 
       <Section title="Heading font">
@@ -195,7 +206,7 @@ export default function DesignTab({ editor }: { editor: EditorApi }) {
         <Overlays settings={s} set={set} center={{ lat: channel.lat, lng: channel.lng }} upload={upload} />
       </Section>
 
-      <SiteSection editor={editor} />
+      <SiteSection editor={editor} upload={upload} />
 
       <Section title="Slideshow">
         <div className="grid gap-4 sm:grid-cols-2">
@@ -304,7 +315,7 @@ function FilePick({ accept, url, audio, onPick, onClear }: { accept: string; url
 }
 
 /** Turn a project into its own little website: welcome page, about text, domain, analytics. */
-function SiteSection({ editor }: { editor: EditorApi }) {
+function SiteSection({ editor, upload }: { editor: EditorApi; upload: (f: File) => Promise<string> }) {
   const { channel, isOwner, appUrl } = editor;
   const s = channel.settings;
   const toast = useToast();
@@ -332,10 +343,29 @@ function SiteSection({ editor }: { editor: EditorApi }) {
         <input type="checkbox" role="switch" className="switch" checked={!!welcome.enabled} onChange={(e) => set({ welcome: { ...welcome, enabled: e.target.checked || undefined } })} />
       </label>
       {welcome.enabled && (
-        <Field label="Tagline">
-          <input className="input" value={welcome.tagline ?? ''} placeholder="e.g. Everyone has a story to tell" onChange={(e) => set({ welcome: { ...welcome, tagline: e.target.value || undefined } })} />
-        </Field>
+        <>
+          <Field label="Tagline">
+            <input className="input" value={welcome.tagline ?? ''} placeholder="e.g. Everyone has a story to tell" onChange={(e) => set({ welcome: { ...welcome, tagline: e.target.value || undefined } })} />
+          </Field>
+          <Field label="Layout">
+            <div className="flex gap-2">
+              {(['center', 'side'] as const).map((l) => (
+                <button key={l} className={(welcome.layout ?? 'center') === l ? 'btn-primary' : 'btn'} onClick={() => set({ welcome: { ...welcome, layout: l === 'center' ? undefined : l } })}>
+                  {l === 'center' ? 'Centered' : 'Framed, on the side'}
+                </button>
+              ))}
+            </div>
+          </Field>
+          <Field label="Decoration (optional)">
+            <p className="mb-2 text-xs text-muted">An artwork with a transparent background, layered over the cover — e.g. a folk-art cut-out around the title.</p>
+            <FilePick accept="image/png,image/webp" url={welcome.decoration} onPick={async (f) => set({ welcome: { ...welcome, decoration: await upload(f) } })} onClear={() => set({ welcome: { ...welcome, decoration: undefined } })} />
+          </Field>
+        </>
       )}
+      <Field label="Pattern (optional)">
+        <p className="mb-2 text-xs text-muted">A decorative strip shown along the top of each story and the About pop-up. Wide images that repeat sideways work best.</p>
+        <FilePick accept="image/*" url={s.pattern} onPick={async (f) => set({ pattern: await upload(f) })} onClear={() => set({ pattern: undefined })} />
+      </Field>
       <Field label="About">
         <textarea className="input min-h-28" value={s.about ?? ''} placeholder="Who made this, why, credits, how stories were gathered and consented… Shown as an About button on public pages." onChange={(e) => set({ about: e.target.value || undefined })} />
       </Field>

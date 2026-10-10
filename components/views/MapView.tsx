@@ -7,10 +7,11 @@ import ItemCard from '@/components/views/ItemCard';
 import { itemColor, located } from '@/lib/style';
 import type { Channel } from '@/lib/types';
 
-export default function MapView({ channel, prefix }: { channel: Channel; prefix: string }) {
+/** `initialItem` opens one story directly (links like /c/slug/map?item=ID). */
+export default function MapView({ channel, prefix, initialItem }: { channel: Channel; prefix: string; initialItem?: string }) {
   const router = useRouter();
   const [hiddenTags, setHiddenTags] = useState<string[]>([]);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(initialItem ?? null);
   const touchX = useRef<number | null>(null);
   const { settings } = channel;
 
@@ -75,7 +76,7 @@ export default function MapView({ channel, prefix }: { channel: Channel; prefix:
             <span className="text-muted">{index + 1} / {visible.length}</span>
             <button className="btn" onClick={() => setSelectedId(null)} aria-label="Close">✕</button>
           </div>
-          <ItemCard key={selected.id} item={selected} />
+          <ItemCard key={selected.id} item={selected} pattern={settings.pattern} />
         </aside>
       )}
       {points.length === 0 && (

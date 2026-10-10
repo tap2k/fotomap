@@ -1,4 +1,4 @@
-import { mkdir, rm, stat, unlink } from 'node:fs/promises';
+import { mkdir, rm, stat, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import {
   S3Client,
@@ -19,6 +19,8 @@ export interface Storage {
   publicUrl(key: string): string;
   /** Actual stored size in bytes, or null if missing. */
   size(key: string): Promise<number | null>;
+  /** Server-side write (scripts, imports). Browsers upload through uploadUrl. */
+  put(key: string, body: Buffer, contentType: string): Promise<void>;
   remove(keys: string[]): Promise<void>;
   /** Deletes everything under a prefix (a whole channel's files). */
   removePrefix(prefix: string): Promise<void>;
@@ -47,6 +49,11 @@ const local: Storage = {
     } catch {
       return null;
     }
+  },
+  async put(key, body) {
+    const file = localPath(key);
+    await mkdir(path.dirname(file), { recursive: true });
+    await writeFile(file, body);
   },
   async remove(keys) {
     await Promise.all(keys.map((k) => unlink(localPath(k)).catch(() => {})));
@@ -81,6 +88,9 @@ function s3Storage(): Storage {
       } catch {
         return null;
       }
+    },
+    async put(key, body, contentType) {
+      await client.send(new PutObjectCommand({ Bucket: bucket, Key: key, Body: body, ContentType: contentType }));
     },
     async remove(keys) {
       if (keys.length)
