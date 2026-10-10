@@ -189,6 +189,7 @@ function GettingStarted({ editor }: { editor: EditorApi }) {
     { Icon: Share2, title: 'Share it', text: 'Publish as a map, slideshow, grid or story — or embed it on a website.', action: () => editor.goTo('design'), cta: 'Design' },
   ];
   return (
+    <div className="space-y-2">
     <div className="grid gap-3 sm:grid-cols-3">
       {steps.map(({ Icon, title, text, action, cta }, i) => (
         <div key={title} className="card flex flex-col gap-2">
@@ -204,6 +205,10 @@ function GettingStarted({ editor }: { editor: EditorApi }) {
           )}
         </div>
       ))}
+    </div>
+    <p className="text-sm text-muted">
+      New here? <a href="/guide" target="_blank" className="text-accent underline">Watch the 2-minute guide</a>.
+    </p>
     </div>
   );
 }

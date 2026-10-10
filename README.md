@@ -66,6 +66,17 @@ npm run import:channel -- --from https://old-host/strapi --channel bihar --owner
 
 This reads a project (and its sub-projects) through the old server's public `getChannel` API and runs it through the same transform. Users and editors aren't public, so one owner is set. `scripts/presets/bihar.json` recreates the Represent Bihar site with its own Madhubani artwork (`scripts/presets/bihar/`): framed welcome page, About text, navy brand color, tree-pattern strip on each story and a light base map. Preset values written as `file:path` are uploaded into the project's storage.
 
+## Getting-started guide
+
+`/guide` walks through the whole flow with screenshots and a 70-second video (`public/guide/`). Both are recorded by a script, so they can be refreshed after UI changes:
+
+```bash
+npm run build && DATABASE_URL=file:.data/guide.db npm start -- -p 3200   # empty database
+GUIDE_DB=.data/guide.db npm run guide:record
+```
+
+Demo photos and their credits are in `scripts/guide/`.
+
 ## Not built yet
 
 Billing (Stripe) and video generation are left for later. Plan limits exist (`lib/plans.ts`) but are off unless `TIER_ENFORCEMENT=true`.

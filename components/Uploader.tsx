@@ -30,16 +30,16 @@ export default function Uploader({
   const update = (id: number, patch: Partial<Job>) => setJobs((js) => js.map((j) => (j.id === id ? { ...j, ...patch } : j)));
 
   async function addFiles(list: FileList | File[]) {
-    const queue = [...list].map((file) => ({ file, id: nextId.current++ }));
+    const queue = [...list].map((file, index) => ({ file, index, id: nextId.current++ }));
     setJobs((js) => [...js, ...queue.map(({ file, id }) => ({ id, name: file.name, progress: 0 }))]);
-    // A few at a time keeps phones responsive.
-    const results: ItemInput[] = [];
+    // A few at a time keeps phones responsive; results keep the order the files were chosen in.
+    const results: (ItemInput | undefined)[] = [];
     const worker = async () => {
       for (let job = queue.shift(); job; job = queue.shift()) {
         try {
           const prepared = await prepareFile(job.file);
           const id = job.id;
-          results.push(await uploadPrepared(channelId, prepared, (p) => update(id, { progress: p })));
+          results[job.index] = await uploadPrepared(channelId, prepared, (p) => update(id, { progress: p }));
           setJobs((js) => js.filter((j) => j.id !== id));
         } catch (e) {
           update(job.id, { error: (e as Error).message });
@@ -47,7 +47,8 @@ export default function Uploader({
       }
     };
     await Promise.all([worker(), worker(), worker()]);
-    if (results.length) await onAdd(results);
+    const done = results.filter((r): r is ItemInput => !!r);
+    if (done.length) await onAdd(done);
   }
 
   return (

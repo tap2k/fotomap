@@ -51,11 +51,15 @@ export default async function Home() {
         </Link>
         {user ? (
           <form action="/api/auth/logout" method="post" className="flex items-center gap-3 text-sm">
+            <Link href="/guide" className="text-muted hover:underline">Guide</Link>
             <span className="hidden text-muted sm:inline">{user.email}</span>
             <button className="btn">Sign out</button>
           </form>
         ) : (
-          <Link href="/login" className="btn-primary">Sign in</Link>
+          <div className="flex items-center gap-3 text-sm">
+            <Link href="/guide" className="text-muted hover:underline">How it works</Link>
+            <Link href="/login" className="btn-primary">Sign in</Link>
+          </div>
         )}
       </header>
 
@@ -83,7 +87,10 @@ export default async function Home() {
                 Fotomap helps communities, researchers and storytellers collect photos, video and sound from the field — and share
                 them back as maps and stories.
               </p>
-              <Link href="/login" className="btn-primary px-5 py-2.5 text-base">Get started — it’s free</Link>
+              <div className="flex flex-wrap justify-center gap-3">
+                <Link href="/login" className="btn-primary px-5 py-2.5 text-base">Get started — it’s free</Link>
+                <Link href="/guide" className="btn px-5 py-2.5 text-base">Watch the 2-minute guide</Link>
+              </div>
             </section>
             <section className="grid gap-4 sm:grid-cols-3">
               {STEPS.map(([title, text]) => (

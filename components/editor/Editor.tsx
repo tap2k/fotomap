@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Check, ChevronDown, Eye, Inbox, Image as ImageIcon, Loader2, MoreHorizontal, Palette, Share2, Users, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Check, ChevronDown, Eye, HelpCircle, Inbox, Image as ImageIcon, Loader2, MoreHorizontal, Palette, Share2, Users, AlertCircle } from 'lucide-react';
 import { api, setShareKey } from '@/lib/api';
 import { useDebounced } from '@/lib/hooks';
 import { useToast } from '@/components/Toast';
@@ -166,6 +166,9 @@ export default function Editor({ initial, shareKey, isOwner, signedIn, appUrl, p
             aria-label="Project title"
           />
           <SaveIndicator state={save} />
+          <a href="/guide" target="_blank" className="rounded p-1.5 text-muted hover:bg-card" title="Getting started guide" aria-label="Help">
+            <HelpCircle size={18} />
+          </a>
           <PreviewMenu slug={channel.slug} query={viewQuery} />
           <button className="btn-primary" onClick={() => setSharing(true)}>
             <Share2 size={16} /> <span className="hidden sm:inline">Share</span>

@@ -16,7 +16,8 @@
     "db:migrate": "drizzle-kit migrate",
     "seed": "tsx scripts/seed.ts",
     "postinstall": "node -e \"const fs=require('fs');fs.mkdirSync('public',{recursive:true});fs.copyFileSync('node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs','public/maplibre-gl-worker.mjs')\"",
-    "import:channel": "tsx scripts/import-channel.ts"
+    "import:channel": "tsx scripts/import-channel.ts",
+    "guide:record": "node scripts/guide/record.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1149.0",

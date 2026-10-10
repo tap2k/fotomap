@@ -35,7 +35,7 @@ export default function SubmitForm({ channelId, token, consent, askName, locatio
       const contributor = { name: name.trim() || undefined, consent: consent ? agreed : undefined };
       await api(`/api/channels/${channelId}/items`, {
         method: 'POST',
-        body: { items: drafts.map((d) => ({ ...d, meta: { ...d.meta, contributor } })) },
+        body: { submission: true, items: drafts.map((d) => ({ ...d, meta: { ...d.meta, contributor } })) },
       });
       setDrafts([]);
       setState('done');

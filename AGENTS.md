@@ -52,6 +52,7 @@ npm run dev | build | start
 npm run typecheck && npm test && npm run e2e
 npm run db:generate   # after editing lib/db/schema.ts; commit the drizzle/ output
 npm run seed          # demo data
+npm run guide:record  # re-record /guide video + screenshots (see README)
 ```
 
 In the cloud sandbox, run Playwright with `PLAYWRIGHT_CHROMIUM_PATH=/opt/pw-browsers/chromium`.
