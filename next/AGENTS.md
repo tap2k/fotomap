@@ -42,6 +42,7 @@ tests/               vitest (*.test.ts) and Playwright (e2e/)
 - **Ordering uses fractional indexing** (`position` text keys); a reorder updates one row.
 - **The UI says "project"; the code says `channel`.** Keep user-facing wording plain (Hidden/Visible, Inbox, Collect).
 - **The editor autosaves.** Panels call `editor.updateItems` / `updateChannel` / `updateSettings` (optimistic, debounced, batched); the header shows Saving…/Saved. No Save buttons, no `alert()`/`prompt()` — use `useToast()` and `Modal`.
+- **Branding is settings, not forks.** Welcome page, about text, font, analytics and custom domain live on the project (`settings.welcome/about/font/analyticsId`, `channels.domain`); `app/page.tsx` serves a project on its custom domain.
 - Submissions are sanitised server-side (`sanitizeSubmission`): forced pending, location precision applied, consent enforced.
 
 ## Commands

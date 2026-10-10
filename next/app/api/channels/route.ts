@@ -21,7 +21,7 @@ export const POST = route(async (req) => {
   }
   const [channel] = await db
     .insert(channels)
-    .values({ ...input, id: newId(), slug: newId(8), ownerId, settings: input.settings ?? {} })
+    .values({ ...input, domain: null, id: newId(), slug: newId(8), ownerId, settings: input.settings ?? {} })
     .returning();
   if (!input.parentId) await db.insert(grants).values({ id: newId(), channelId: channel.id, role: 'owner', userId: ownerId });
   return channel;

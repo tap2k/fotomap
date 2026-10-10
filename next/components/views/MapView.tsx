@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import MapCanvas, { type MapPoint } from '@/components/MapCanvas';
 import ItemCard from '@/components/views/ItemCard';
@@ -11,6 +11,7 @@ export default function MapView({ channel, prefix }: { channel: Channel; prefix:
   const router = useRouter();
   const [hiddenTags, setHiddenTags] = useState<string[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const touchX = useRef<number | null>(null);
   const { settings } = channel;
 
   const visible = useMemo(
@@ -58,7 +59,14 @@ export default function MapView({ channel, prefix }: { channel: Channel; prefix:
         </div>
       )}
       {selected && (
-        <aside className="fade-in absolute inset-x-0 bottom-0 max-h-[65%] overflow-y-auto rounded-t-xl bg-bg p-4 shadow-2xl sm:inset-x-auto sm:bottom-auto sm:right-3 sm:top-3 sm:max-h-[calc(100%-1.5rem)] sm:w-96 sm:rounded-xl">
+        <aside
+          onTouchStart={(e) => (touchX.current = e.touches[0].clientX)}
+          onTouchEnd={(e) => {
+            const dx = touchX.current == null ? 0 : e.changedTouches[0].clientX - touchX.current;
+            if (Math.abs(dx) > 60) step(dx < 0 ? 1 : -1);
+            touchX.current = null;
+          }}
+          className="fade-in absolute inset-x-0 bottom-0 max-h-[65%] overflow-y-auto rounded-t-xl bg-bg p-4 shadow-2xl sm:inset-x-auto sm:bottom-auto sm:right-3 sm:top-3 sm:max-h-[calc(100%-1.5rem)] sm:w-96 sm:rounded-xl">
           <div className="mb-2 flex items-center justify-between text-sm">
             <div className="flex gap-1">
               <button className="btn" onClick={() => step(-1)} aria-label="Previous">‹</button>

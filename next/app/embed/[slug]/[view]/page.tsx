@@ -15,7 +15,7 @@ export default async function EmbedPage({ params, searchParams }: Props) {
   if (!VIEWS.includes(view as View)) notFound();
   const { channel } = await getViewable(slug, key);
   return (
-    <div data-theme={channel.settings.theme ?? 'light'} className={`relative bg-bg text-fg ${fillsScreen(view as View) ? 'h-dvh' : 'min-h-dvh'}`}>
+    <div data-theme={channel.settings.theme ?? 'light'} data-font={channel.settings.font ?? 'sans'} className={`relative bg-bg text-fg ${fillsScreen(view as View) ? 'h-dvh' : 'min-h-dvh'}`}>
       <ChannelView channel={channel} view={view as View} prefix="/embed" start={Number(i) || 0} keyParam={key} />
       <a
         href={`${appUrl()}/c/${slug}/${view}`}

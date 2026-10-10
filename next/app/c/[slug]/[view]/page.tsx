@@ -6,6 +6,8 @@ import { getViewable } from '@/lib/pages';
 import { VIEWS, type View } from '@/lib/types';
 import { Pencil } from 'lucide-react';
 import { VIEW_LABELS } from '@/components/viewMeta';
+import AboutButton from '@/components/site/AboutButton';
+import Analytics from '@/components/site/Analytics';
 
 type Props = { params: Promise<{ slug: string; view: string }>; searchParams: Promise<{ key?: string; i?: string }> };
 
@@ -29,9 +31,9 @@ export default async function ChannelPage({ params, searchParams }: Props) {
   const full = fillsScreen(view as View);
 
   return (
-    <div data-theme={channel.settings.theme ?? 'light'} className={full ? 'flex h-dvh flex-col bg-bg text-fg' : 'min-h-dvh bg-bg text-fg'}>
+    <div data-theme={channel.settings.theme ?? 'light'} data-font={channel.settings.font ?? 'sans'} className={full ? 'flex h-dvh flex-col bg-bg text-fg' : 'min-h-dvh bg-bg text-fg'}>
       <header className={`z-20 flex items-center gap-3 border-b border-line bg-bg px-3 py-2 ${view === 'grid' ? 'sticky top-0' : ''}`}>
-        <Link href="/" className="shrink-0" aria-label="Fotomap home">
+        <Link href={channel.settings.welcome?.enabled ? `/c/${slug}${q}` : '/'} className="shrink-0" aria-label="Home">
           <img src="/favicon-32x32.png" alt="" className="h-6 w-6" />
         </Link>
         <div className="min-w-0 flex-1">
@@ -55,6 +57,9 @@ export default async function ChannelPage({ params, searchParams }: Props) {
               <span className="hidden md:inline">{label}</span>
             </Link>
           ))}
+          {channel.settings.about && (
+            <AboutButton title={channel.title} about={channel.settings.about} iconOnly className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-muted hover:bg-card hover:text-fg" />
+          )}
           {canEdit && (
             <Link href={`/edit/${channel.id}`} className="ml-1 flex items-center gap-1.5 rounded-md border border-line px-2 py-1.5 hover:bg-card" title="Edit">
               <Pencil size={16} />
@@ -66,6 +71,7 @@ export default async function ChannelPage({ params, searchParams }: Props) {
       <main className={full ? 'relative min-h-0 flex-1' : ''}>
         <ChannelView channel={channel} view={view as View} prefix="/c" start={Number(i) || 0} keyParam={key} />
       </main>
+      <Analytics id={channel.settings.analyticsId} />
     </div>
   );
 }

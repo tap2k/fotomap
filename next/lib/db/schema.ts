@@ -37,6 +37,8 @@ export const channels = sqliteTable(
     lat: real('lat'),
     lng: real('lng'),
     zoom: real('zoom'),
+    // Custom domain (e.g. stories.example.org) that serves this project at '/'.
+    domain: text('domain').unique(),
     position: text('position').notNull().default('a0'),
     settings: text('settings', { mode: 'json' }).$type<ChannelSettings>().notNull().default({}),
     createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(now),

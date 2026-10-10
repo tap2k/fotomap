@@ -4,6 +4,7 @@ import { z } from 'zod';
 
 export const THEMES = ['light', 'dark', 'paper', 'ocean', 'forest', 'sunset'] as const;
 export const VIEWS = ['map', 'reel', 'grid', 'story'] as const;
+export const FONTS = ['sans', 'serif', 'rounded', 'script'] as const;
 export type View = (typeof VIEWS)[number];
 
 // Only http(s) links or our own stored files — never javascript:, data:, etc.
@@ -34,6 +35,10 @@ export const channelSettingsSchema = z
     audioUrl: safeUrl.optional(),
     interval: z.number().int().min(1).max(120).optional(), // reel seconds per still
     showTitle: z.boolean().optional(),
+    font: z.enum(FONTS).optional(), // heading font
+    welcome: z.object({ enabled: z.boolean().optional(), tagline: z.string().max(300).optional() }).optional(),
+    about: z.string().max(20000).optional(), // "About" pop-up on public pages
+    analyticsId: z.string().regex(/^G-[A-Z0-9]{4,20}$/).optional(), // Google Analytics 4
     submissions: z
       .object({
         prompt: z.string().max(2000).optional(),
@@ -92,6 +97,13 @@ export const channelInputSchema = z.object({
   zoom: z.number().min(0).max(24).nullish(),
   position: z.string().max(100).optional(),
   settings: channelSettingsSchema.optional(),
+  domain: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .regex(/^([a-z0-9-]+\.)+[a-z]{2,}$/, 'Enter a domain like stories.example.org')
+    .nullish()
+    .or(z.literal('').transform(() => null)),
 });
 
 // The one Channel shape every view, embed, export and the editor consume.
@@ -130,6 +142,7 @@ export type Channel = {
   lat: number | null;
   lng: number | null;
   zoom: number | null;
+  domain: string | null;
   settings: ChannelSettings;
   parent: { slug: string; title: string } | null;
   children: ChildChannel[];

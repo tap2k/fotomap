@@ -55,6 +55,7 @@ export async function loadChannel(row: ChannelRow, { drafts = false } = {}): Pro
     lat: row.lat,
     lng: row.lng,
     zoom: row.zoom,
+    domain: row.domain,
     settings: row.settings,
     parent: parent && (drafts || parent.visibility !== 'private') ? { slug: parent.slug, title: parent.title } : null,
     children: childRows.map((c) => ({

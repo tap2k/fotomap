@@ -28,6 +28,8 @@ The database (`.data/fotomap.db`) is created and migrated automatically on start
 
 Typical flow: create a project from a template, turn on contributions in *Collect* (copy the link or print the QR code), and let participants send things from their phones without an account. Approve what arrives in *Inbox*, caption and tag it in *Content*, pick a look in *Design*, then press **Share**. Everything saves automatically. Export as CSV, GeoJSON or a ZIP from *More*.
 
+**Website mode** (Design → Website): a project can have its own welcome page (full-screen cover, title, tagline, Enter), an About pop-up, a heading font, a Google Analytics ID and a custom domain (point a CNAME at the app; its `/` then shows the project). This replaces per-client forks like the old `bihar` branch of express-template with settings.
+
 Heavy work happens in the browser: images are resized to web sizes, EXIF location, date and 360° info are read, and video thumbnails are captured. Files upload straight to storage through signed URLs. The server stores metadata and checks permissions and limits.
 
 ## Deploying

@@ -88,7 +88,7 @@ describe('input validation', () => {
 
 describe('export', () => {
   const channel: Channel = {
-    id: 'c', slug: 's', title: 'T', description: '', visibility: 'unlisted', lat: null, lng: null, zoom: null, settings: {}, parent: null, children: [],
+    id: 'c', slug: 's', title: 'T', description: '', visibility: 'unlisted', lat: null, lng: null, zoom: null, domain: null, settings: {}, parent: null, children: [],
     items: [
       { id: 'i1', kind: 'image', status: 'published', position: 'a0', url: '/api/files/c/c/a.webp', thumbUrl: null, audioUrl: null, title: '=HYPERLINK("x")', caption: 'line, "quoted"\nnext', tags: ['a', 'b'], lat: 1, lng: 2, takenAt: null, meta: {} },
       { id: 'i2', kind: 'text', status: 'draft', position: 'a1', url: null, thumbUrl: null, audioUrl: null, title: 'No place', caption: '', tags: [], lat: null, lng: null, takenAt: null, meta: {} },

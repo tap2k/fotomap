@@ -1,4 +1,11 @@
 import Link from 'next/link';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { eq } from 'drizzle-orm';
+import { db, channels } from '@/lib/db';
+import { appUrl } from '@/lib/auth';
+import { loadChannel } from '@/lib/channel';
+import Welcome from '@/components/site/Welcome';
 import { getUser } from '@/lib/auth';
 import { myChannels, publicChannels } from '@/lib/listing';
 import ChannelCards from '@/components/ChannelCards';
@@ -17,7 +24,22 @@ const STEPS = [
   ['Share', 'Publish as a map, slideshow, grid or scrolling story — and embed it anywhere. Export everything as CSV, GeoJSON or a ZIP.'],
 ];
 
+/** On a project's custom domain, '/' is that project's home. */
+async function domainProject() {
+  const host = (await headers()).get('host')?.split(':')[0].toLowerCase();
+  if (!host || host === new URL(appUrl()).hostname) return null;
+  const [row] = await db.select().from(channels).where(eq(channels.domain, host));
+  return row && row.visibility !== 'private' ? row : null;
+}
+
 export default async function Home() {
+  const site = await domainProject();
+  if (site) {
+    const channel = await loadChannel(site);
+    const enter = `/c/${site.slug}/${channel.settings.defaultView ?? 'map'}`;
+    if (channel.settings.welcome?.enabled) return <Welcome channel={channel} enterHref={enter} />;
+    redirect(enter);
+  }
   const [user, featured] = await Promise.all([getUser(), publicChannels()]);
   const mine = user ? await myChannels(user.id) : [];
 

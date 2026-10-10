@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import Providers from '@/components/Providers';
+import { fontVariables } from '@/lib/fonts';
 
 export const metadata: Metadata = {
   title: { default: 'Fotomap', template: '%s · Fotomap' },
@@ -12,7 +13,7 @@ export const viewport: Viewport = { width: 'device-width', initialScale: 1 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={fontVariables}>
       <body className="min-h-dvh antialiased">
         <Providers>{children}</Providers>
       </body>

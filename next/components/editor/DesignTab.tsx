@@ -5,7 +5,8 @@ import dynamic from 'next/dynamic';
 import { Check, Music, Trash2, Upload } from 'lucide-react';
 import { prepareFile, uploadBlobs } from '@/lib/upload';
 import { DEFAULT_MARKER, MAP_STYLE } from '@/lib/style';
-import { THEMES, type ChannelSettings } from '@/lib/types';
+import { FONTS, THEMES, type ChannelSettings } from '@/lib/types';
+import { api } from '@/lib/api';
 import { Field, Section } from '@/components/ui';
 import PlaceSearch from '@/components/PlaceSearch';
 import { VIEW_LABELS } from '@/components/viewMeta';
@@ -99,6 +100,20 @@ export default function DesignTab({ editor }: { editor: EditorApi }) {
         </div>
       </Section>
 
+      <Section title="Heading font">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {FONTS.map((f) => {
+            const active = (s.font ?? 'sans') === f;
+            return (
+              <button key={f} data-font={f} onClick={() => set({ font: f })} className={`card p-3 text-left ${active ? 'border-accent ring-2 ring-accent' : 'hover:bg-card'}`} aria-pressed={active}>
+                <h3 className="text-2xl">Aa Story</h3>
+                <span className="text-xs capitalize text-muted">{f}</span>
+              </button>
+            );
+          })}
+        </div>
+      </Section>
+
       <Section title="Cover & description">
         <Field label="Description">
           <textarea className="input min-h-20" value={channel.description} placeholder="A sentence or two about the project, shown on the story title and when sharing." onChange={(e) => editor.updateChannel({ description: e.target.value })} />
@@ -179,6 +194,8 @@ export default function DesignTab({ editor }: { editor: EditorApi }) {
 
         <Overlays settings={s} set={set} center={{ lat: channel.lat, lng: channel.lng }} upload={upload} />
       </Section>
+
+      <SiteSection editor={editor} />
 
       <Section title="Slideshow">
         <div className="grid gap-4 sm:grid-cols-2">
@@ -283,5 +300,65 @@ function FilePick({ accept, url, audio, onPick, onClear }: { accept: string; url
         </button>
       )}
     </div>
+  );
+}
+
+/** Turn a project into its own little website: welcome page, about text, domain, analytics. */
+function SiteSection({ editor }: { editor: EditorApi }) {
+  const { channel, isOwner, appUrl } = editor;
+  const s = channel.settings;
+  const toast = useToast();
+  const set = editor.updateSettings;
+  const [domain, setDomain] = useState(channel.domain ?? '');
+  const welcome = s.welcome ?? {};
+
+  async function saveDomain() {
+    if ((channel.domain ?? '') === domain.trim()) return;
+    try {
+      await api(`/api/channels/${channel.id}`, { method: 'PATCH', body: { domain: domain.trim() } });
+      toast(domain.trim() ? 'Domain saved' : 'Domain removed');
+    } catch (e) {
+      toast((e as Error).message, 'error');
+    }
+  }
+
+  return (
+    <Section title="Website">
+      <label className="card flex cursor-pointer items-center justify-between gap-4">
+        <span>
+          <span className="block font-medium">Welcome page</span>
+          <span className="text-sm text-muted">Visitors first see a full-screen cover with your title and an Enter button.</span>
+        </span>
+        <input type="checkbox" role="switch" className="switch" checked={!!welcome.enabled} onChange={(e) => set({ welcome: { ...welcome, enabled: e.target.checked || undefined } })} />
+      </label>
+      {welcome.enabled && (
+        <Field label="Tagline">
+          <input className="input" value={welcome.tagline ?? ''} placeholder="e.g. Everyone has a story to tell" onChange={(e) => set({ welcome: { ...welcome, tagline: e.target.value || undefined } })} />
+        </Field>
+      )}
+      <Field label="About">
+        <textarea className="input min-h-28" value={s.about ?? ''} placeholder="Who made this, why, credits, how stories were gathered and consented… Shown as an About button on public pages." onChange={(e) => set({ about: e.target.value || undefined })} />
+      </Field>
+      {isOwner && !channel.parent && (
+        <Field label="Custom domain">
+          <input className="input" value={domain} placeholder="stories.example.org" onChange={(e) => setDomain(e.target.value)} onBlur={saveDomain} onKeyDown={(e) => e.key === 'Enter' && (e.target as HTMLInputElement).blur()} />
+          <p className="mt-1 text-xs text-muted">
+            Point the domain’s DNS (a CNAME record) at <code>{new URL(appUrl).hostname}</code>, and its home page will show this project.
+          </p>
+        </Field>
+      )}
+      <Field label="Google Analytics ID">
+        <input
+          className="input"
+          defaultValue={s.analyticsId ?? ''}
+          placeholder="G-XXXXXXXXXX (optional)"
+          onBlur={(e) => {
+            const v = e.target.value.trim().toUpperCase();
+            if (v && !/^G-[A-Z0-9]{4,20}$/.test(v)) return toast('That doesn’t look like a GA4 ID (G-…)', 'error');
+            set({ analyticsId: v || undefined });
+          }}
+        />
+      </Field>
+    </Section>
   );
 }

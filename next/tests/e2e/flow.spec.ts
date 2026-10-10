@@ -100,6 +100,22 @@ test('collect → review → publish → view → export', async ({ page, browse
   await guest.goto(`/c/${slug}/map`);
   await expect(guest.locator('.maplibregl-map').first()).toBeAttached();
 
+  // Website mode: welcome page, about text, heading font.
+  await page.evaluate(async (id) => {
+    await fetch(`/api/channels/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ settings: { defaultView: 'map', font: 'script', welcome: { enabled: true, tagline: 'Everyone has a story to tell' }, about: 'Made with our neighbours.' } }),
+    });
+  }, channelId);
+  await guest.goto(`/c/${slug}`);
+  await expect(guest.getByText('Everyone has a story to tell')).toBeVisible();
+  await guest.getByRole('button', { name: 'About' }).click();
+  await expect(guest.getByText('Made with our neighbours.')).toBeVisible();
+  await guest.keyboard.press('Escape');
+  await guest.getByRole('link', { name: 'Enter' }).click();
+  await expect(guest).toHaveURL(new RegExp(`/c/${slug}/map`));
+
   // Export.
   const csv = await (await page.request.get(`/api/channels/${channelId}/export?format=csv`)).text();
   expect(csv).toContain('Big Ben');

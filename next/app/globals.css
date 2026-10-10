@@ -60,6 +60,25 @@
   --accent-fg: #ffffff;
 }
 
+/* Heading font, chosen per project with data-font. */
+:root {
+  --font-heading: var(--font);
+}
+[data-font='serif'] {
+  --font-heading: var(--font-serif), Georgia, serif;
+}
+[data-font='rounded'] {
+  --font-heading: var(--font-rounded), ui-rounded, sans-serif;
+}
+[data-font='script'] {
+  --font-heading: var(--font-script), cursive;
+}
+[data-font] h1,
+[data-font] h2,
+[data-font] h3 {
+  font-family: var(--font-heading);
+}
+
 html,
 body {
   background: var(--bg);

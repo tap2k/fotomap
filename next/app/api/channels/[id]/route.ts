@@ -20,7 +20,12 @@ export const PATCH = route<Ctx>(async (req, { params }) => {
   const { channel, roles } = await requireChannel((await params).id, 'edit');
   const input = channelInputSchema.partial().parse(await req.json());
   const owner = roles.includes('owner');
-  if ((input.visibility || input.parentId !== undefined) && !owner) fail(403, 'Only owners can change sharing');
+  if ((input.visibility || input.parentId !== undefined || input.domain !== undefined) && !owner) fail(403, 'Only owners can change sharing');
+  if (input.domain) {
+    if (channel.parentId) fail(400, 'Only top-level projects can have a domain');
+    const [taken] = await db.select({ id: channels.id }).from(channels).where(eq(channels.domain, input.domain));
+    if (taken && taken.id !== channel.id) fail(409, 'That domain is already used by another project');
+  }
   if (input.parentId === null && channel.parentId) fail(400, 'Sub-channels stay inside a parent');
   if (input.parentId) {
     const { channel: parent } = await requireChannel(input.parentId, 'manage');
