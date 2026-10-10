@@ -57,6 +57,15 @@ npm run migrate:strapi
 
 This imports users (merged by email), projects (same `uniqueID`, so old public links keep working), content, tags and their colors, overlays, cover images, tilesets, owners and editors. Files are not copied; items keep pointing at their existing URLs. Old `privateID` links stop working by design: they could be forged. Owners turn contributions back on in *Collect* and share again with **Share**. Old `/map?channelid=…` and `/reel?channelid=…` URLs redirect.
 
+### Importing one project without database access
+
+```bash
+npm run import:channel -- --from https://old-host/strapi --channel bihar --owner you@example.org \
+  --settings scripts/presets/bihar.json --domain bihar.represent.org
+```
+
+This reads a project (and its sub-projects) through the old server's public `getChannel` API and runs it through the same transform. Users and editors aren't public, so one owner is set. `scripts/presets/bihar.json` recreates the Represent Bihar site: welcome page, About text, script headings and a light base map.
+
 ## Not built yet
 
 Billing (Stripe) and video generation are left for later. Plan limits exist (`lib/plans.ts`) but are off unless `TIER_ENFORCEMENT=true`.

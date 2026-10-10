@@ -1,6 +1,7 @@
 import { generateKeyBetween } from 'fractional-indexing';
 import { newId } from '@/lib/crypto';
 import { youtubeId } from '@/lib/embed';
+import { mimeFromName } from '@/lib/mime';
 import type { channels, grants, items, users } from '@/lib/db/schema';
 import type { ChannelSettings, ItemMeta } from '@/lib/types';
 
@@ -169,7 +170,7 @@ export function transformStrapi(s: StrapiSnapshot, { mediaBase = '' }: { mediaBa
       visibility: c.public ? 'public' : 'unlisted',
       lat: c.lat ?? null,
       lng: c.long ?? null,
-      zoom: c.zoom ?? null,
+      zoom: c.zoom != null ? Math.max(0, c.zoom - 1) : null, // Leaflet zoom = MapLibre zoom + 1 (256 vs 512 px tiles)
       position: channelPosition.get(c.id) ?? 'a0',
       settings: JSON.parse(JSON.stringify(settings)), // drop undefined
       createdAt: date(c.created_at),
@@ -198,13 +199,14 @@ export function transformStrapi(s: StrapiSnapshot, { mediaBase = '' }: { mediaBa
     for (const ct of list) {
       const media = file('content', ct.id, 'mediafile');
       const audio = file('content', ct.id, 'audiofile');
-      const mime: string = media?.mime ?? '';
+      const mime: string = media?.mime || (media ? mimeFromName(media.url) : '');
       const kind = media
         ? mime.startsWith('video/') ? 'video' : mime.startsWith('audio/') ? 'audio' : 'image'
         : ct.ext_url ? 'embed' : audio ? 'audio' : 'text';
       const url = media ? abs(media.url) : kind === 'embed' ? ct.ext_url : kind === 'audio' ? abs(audio?.url) : null;
       const yt = kind === 'embed' && ct.ext_url ? youtubeId(ct.ext_url) : null;
-      const contributor = usernames.get(contributorOf.get(ct.id));
+      // The old `name` field held the narrator/contributor when a title was also set.
+      const contributor = usernames.get(contributorOf.get(ct.id)) ?? (ct.title && ct.name ? String(ct.name) : undefined);
       const meta: ItemMeta = {
         is360: ct.is_360 || ct.is360 || String(ct.mapping ?? '').startsWith('equirect') || undefined,
         start: ct.start_time > 0 ? ct.start_time : undefined,
@@ -235,4 +237,60 @@ export function transformStrapi(s: StrapiSnapshot, { mediaBase = '' }: { mediaBa
     }
   }
   return out;
+}
+
+/**
+ * Builds a table snapshot from the public `getChannel?uniqueID=` JSON of the old API, so a
+ * project can be imported without database access (no users or editors; one owner is given).
+ */
+export function apiToSnapshot(channels: Row[], ownerEmail: string): StrapiSnapshot {
+  const snap: StrapiSnapshot = Object.fromEntries(STRAPI_TABLES.map((t) => [t, []]));
+  const OWNER = 1_000_000; // not 1: id 1 means superuser in the old data
+  snap.up_users.push({ id: OWNER, email: ownerEmail, username: ownerEmail.split('@')[0], plan: 'free' });
+  let fileId = 0;
+  const file = (f: Row | null | undefined, type: string, related: number, field: string) => {
+    if (!f?.url) return;
+    snap.files.push({ id: ++fileId, url: f.url, size: f.size, mime: f.mime, formats: f.formats });
+    snap.files_related_morphs.push({ file_id: fileId, related_id: related, related_type: `api::${type}.${type}`, field });
+  };
+  const tagIds = new Map<string, number>();
+  for (const c of channels) {
+    snap.channels.push({
+      id: c.id, unique_id: c.uniqueID, name: c.name, public: c.public, lat: c.lat, long: c.long, zoom: c.zoom, interval: c.interval,
+      markercolor: c.markercolor, showtitle: c.showtitle, description: c.description, order: c.order, allowsubmissions: c.allowsubmissions,
+      created_at: c.createdAt, updated_at: c.updatedAt,
+    });
+    if (c.parentId) snap.channels_parent_links.push({ channel_id: c.id, inv_channel_id: c.parentId });
+    else snap.channels_owner_links.push({ channel_id: c.id, user_id: OWNER });
+    if (c.tileset?.urlformatstring) {
+      if (!snap.tilesets.some((t) => t.id === c.tileset.id)) snap.tilesets.push(c.tileset);
+      snap.channels_tileset_links.push({ channel_id: c.id, tileset_id: c.tileset.id });
+    }
+    file(c.picture, 'channel', c.id, 'picture');
+    file(c.audiofile, 'channel', c.id, 'audiofile');
+    for (const t of c.tags ?? []) {
+      if (!tagIds.has(`${c.id}:${t.tag}`)) {
+        tagIds.set(`${c.id}:${t.tag}`, t.id);
+        snap.tags.push({ id: t.id, tag: t.tag, markercolor: t.markercolor });
+        snap.tags_channel_links.push({ tag_id: t.id, channel_id: c.id });
+      }
+    }
+    for (const o of c.overlays ?? []) {
+      snap.overlays.push(o);
+      snap.overlays_channel_links.push({ overlay_id: o.id, channel_id: c.id });
+      file(o.image, 'overlay', o.id, 'image');
+    }
+    for (const ct of c.contents ?? []) {
+      snap.contents.push({
+        id: ct.id, order: ct.order, title: ct.title, name: ct.name, description: ct.description, lat: ct.lat, long: ct.long,
+        ext_url: ct.ext_url, is_360: ct.is360, mapping: ct.mapping, textalignment: ct.textalignment, start_time: ct.start_time,
+        duration: ct.duration, published_at: ct.publishedAt, created_at: ct.createdAt, updated_at: ct.updatedAt,
+      });
+      snap.contents_channel_links.push({ content_id: ct.id, channel_id: c.id });
+      for (const t of ct.tags ?? []) snap.tags_contents_links.push({ tag_id: tagIds.get(`${c.id}:${t.tag}`) ?? t.id, content_id: ct.id });
+      file(ct.mediafile, 'content', ct.id, 'mediafile');
+      file(ct.audiofile, 'content', ct.id, 'audiofile');
+    }
+  }
+  return snap;
 }

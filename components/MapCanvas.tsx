@@ -176,10 +176,14 @@ export default function MapCanvas({
 function toStyle(url?: string, attribution?: string): string | maplibregl.StyleSpecification {
   if (!url) return MAP_STYLE;
   if (!url.includes('{z}')) return url;
+  // Leaflet-style templates: {s} subdomains, plain http. Attribution is shown as HTML by MapLibre, so strip tags.
+  const https = url.replace(/^http:\/\//, 'https://');
+  const tiles = https.includes('{s}') ? ['a', 'b', 'c'].map((s) => https.replace('{s}', s)) : [https];
+  const text = attribution?.replace(/<[^>]*>/g, '').replace(/&copy;/g, '©').replace(/&[a-z]+;/g, ' ');
   return {
     version: 8,
     glyphs: 'https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf',
-    sources: { raster: { type: 'raster', tiles: [url], tileSize: 256, attribution } },
+    sources: { raster: { type: 'raster', tiles, tileSize: 256, attribution: text } },
     layers: [{ id: 'raster', type: 'raster', source: 'raster' }],
   };
 }
