@@ -92,7 +92,7 @@ export default function ItemForm({ item, editor, onClose }: { item: Item; editor
                 points={point}
                 initial={draft.lat != null && draft.lng != null ? { lat: draft.lat, lng: draft.lng, zoom: 12 } : channel.lat != null && channel.lng != null ? { lat: channel.lat, lng: channel.lng, zoom: channel.zoom ?? 8 } : null}
                 cluster={false}
-                styleUrl={channel.settings.mapStyle}
+                mapSettings={channel.settings}
                 onMapClick={({ lat, lng }) => set({ lat: round(lat), lng: round(lng) })}
               />
             </div>

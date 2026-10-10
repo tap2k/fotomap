@@ -36,8 +36,7 @@ export default function MapView({ channel, prefix }: { channel: Channel; prefix:
     <div className="relative h-full w-full">
       <MapCanvas
         points={points}
-        overlays={settings.overlays}
-        styleUrl={settings.mapStyle}
+        mapSettings={settings}
         initial={channel.lat != null && channel.lng != null ? { lat: channel.lat, lng: channel.lng, zoom: channel.zoom ?? 10 } : null}
         focus={selected ? { lat: selected.lat!, lng: selected.lng!, zoom: selected.meta.camera?.zoom } : null}
         selectedId={selectedId}

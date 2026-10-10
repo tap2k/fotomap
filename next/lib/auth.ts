@@ -54,6 +54,12 @@ export async function signIn(email: string, name?: string) {
 
 export async function sendLoginLink(email: string, next = '/') {
   email = email.trim().toLowerCase();
+  // At most one email per address per minute (tokens live 15 minutes).
+  const recent = await db
+    .select({ id: loginTokens.id })
+    .from(loginTokens)
+    .where(and(eq(loginTokens.email, email), gt(loginTokens.expiresAt, new Date(Date.now() + 14 * 60e3))));
+  if (recent.length) return;
   const token = newToken();
   await db.insert(loginTokens).values({ id: sha256(token), email, expiresAt: new Date(Date.now() + 15 * 60e3) });
   const link = `${appUrl()}/api/auth/verify?token=${token}&next=${encodeURIComponent(safeNext(next))}`;

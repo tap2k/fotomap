@@ -103,8 +103,7 @@ export default function SettingsForm({ editor, isOwner, videoEnabled, signedIn }
             <MapCanvas
               points={centerPoint}
               cluster={false}
-              styleUrl={settings.mapStyle}
-              overlays={settings.overlays}
+              mapSettings={settings}
               initial={basics.lat != null && basics.lng != null ? { lat: basics.lat, lng: basics.lng, zoom: basics.zoom ?? 8 } : null}
               onMapClick={({ lat, lng }) => setBasics({ ...basics, lat: +lat.toFixed(5), lng: +lng.toFixed(5), zoom: basics.zoom ?? 10 })}
             />

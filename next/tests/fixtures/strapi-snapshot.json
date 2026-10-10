@@ -1,0 +1,829 @@
+{
+ "up_users": [
+  {
+   "id": 1,
+   "username": "admin",
+   "email": "Admin@Example.org",
+   "provider": "local",
+   "reset_password_token": null,
+   "confirmation_token": null,
+   "confirmed": true,
+   "blocked": false,
+   "plan": "free",
+   "stripe_customer_id": null,
+   "stripe_subscription_id": null,
+   "billing_interval": "monthly",
+   "plan_overrides": null,
+   "created_at": "2026-10-10T13:54:41.169Z",
+   "updated_at": "2026-10-10T13:54:41.169Z",
+   "created_by_id": null,
+   "updated_by_id": null
+  },
+  {
+   "id": 2,
+   "username": "ana",
+   "email": "ana@example.org",
+   "provider": "local",
+   "reset_password_token": null,
+   "confirmation_token": null,
+   "confirmed": true,
+   "blocked": false,
+   "plan": "starter",
+   "stripe_customer_id": null,
+   "stripe_subscription_id": null,
+   "billing_interval": "monthly",
+   "plan_overrides": null,
+   "created_at": "2026-10-10T13:54:41.174Z",
+   "updated_at": "2026-10-10T13:54:41.174Z",
+   "created_by_id": null,
+   "updated_by_id": null
+  },
+  {
+   "id": 3,
+   "username": "ana-sb",
+   "email": "ANA@example.org",
+   "provider": "supabase",
+   "reset_password_token": null,
+   "confirmation_token": null,
+   "confirmed": true,
+   "blocked": false,
+   "plan": "free",
+   "stripe_customer_id": null,
+   "stripe_subscription_id": null,
+   "billing_interval": "monthly",
+   "plan_overrides": null,
+   "created_at": "2026-10-10T13:54:41.176Z",
+   "updated_at": "2026-10-10T13:54:41.176Z",
+   "created_by_id": null,
+   "updated_by_id": null
+  },
+  {
+   "id": 4,
+   "username": "ed",
+   "email": "ed@example.org",
+   "provider": "local",
+   "reset_password_token": null,
+   "confirmation_token": null,
+   "confirmed": true,
+   "blocked": false,
+   "plan": "free",
+   "stripe_customer_id": null,
+   "stripe_subscription_id": null,
+   "billing_interval": "monthly",
+   "plan_overrides": null,
+   "created_at": "2026-10-10T13:54:41.180Z",
+   "updated_at": "2026-10-10T13:54:41.180Z",
+   "created_by_id": null,
+   "updated_by_id": null
+  }
+ ],
+ "channels": [
+  {
+   "id": 1,
+   "unique_id": "oldRoot1",
+   "name": "Old Root",
+   "public": true,
+   "lat": 51.5,
+   "long": -0.1,
+   "zoom": 11,
+   "allowsubmissions": true,
+   "description": "Root **desc**",
+   "interval": 7,
+   "markercolor": "green",
+   "order": null,
+   "showtitle": true,
+   "background_color": null,
+   "foreground_color": null,
+   "email": null,
+   "created_at": "2026-10-10T13:54:41.187Z",
+   "updated_at": "2026-10-10T13:54:41.187Z",
+   "created_by_id": null,
+   "updated_by_id": null
+  },
+  {
+   "id": 2,
+   "unique_id": "oldChild1",
+   "name": "Old Child",
+   "public": false,
+   "lat": null,
+   "long": null,
+   "zoom": null,
+   "allowsubmissions": false,
+   "description": null,
+   "interval": null,
+   "markercolor": null,
+   "order": 1,
+   "showtitle": true,
+   "background_color": null,
+   "foreground_color": null,
+   "email": null,
+   "created_at": "2026-10-10T13:54:41.195Z",
+   "updated_at": "2026-10-10T13:54:41.195Z",
+   "created_by_id": null,
+   "updated_by_id": null
+  },
+  {
+   "id": 3,
+   "unique_id": "oldChild2",
+   "name": "Second Child",
+   "public": false,
+   "lat": null,
+   "long": null,
+   "zoom": null,
+   "allowsubmissions": false,
+   "description": null,
+   "interval": null,
+   "markercolor": null,
+   "order": 0,
+   "showtitle": true,
+   "background_color": null,
+   "foreground_color": null,
+   "email": null,
+   "created_at": "2026-10-10T13:54:41.201Z",
+   "updated_at": "2026-10-10T13:54:41.201Z",
+   "created_by_id": null,
+   "updated_by_id": null
+  }
+ ],
+ "contents": [
+  {
+   "id": 1,
+   "order": 2,
+   "ext_url": null,
+   "is_360": false,
+   "mapping": "unknown",
+   "packing": "unknown",
+   "lat": 51.51,
+   "long": -0.12,
+   "markercolor": "none",
+   "title": "Photo two",
+   "description": "Second",
+   "textalignment": "top",
+   "name": null,
+   "location": null,
+   "start_time": null,
+   "duration": null,
+   "background_color": null,
+   "foreground_color": null,
+   "email": null,
+   "created_at": "2026-10-10T13:54:41.217Z",
+   "updated_at": "2026-10-10T13:54:41.217Z",
+   "published_at": "2026-10-10T13:54:41.217Z",
+   "created_by_id": null,
+   "updated_by_id": null
+  },
+  {
+   "id": 2,
+   "order": 1,
+   "ext_url": null,
+   "is_360": true,
+   "mapping": "unknown",
+   "packing": "unknown",
+   "lat": 51.52,
+   "long": -0.11,
+   "markercolor": "none",
+   "title": "Photo one",
+   "description": "First",
+   "textalignment": "top",
+   "name": null,
+   "location": null,
+   "start_time": null,
+   "duration": null,
+   "background_color": null,
+   "foreground_color": null,
+   "email": null,
+   "created_at": "2026-10-10T13:54:41.436Z",
+   "updated_at": "2026-10-10T13:54:41.436Z",
+   "published_at": "2026-10-10T13:54:41.436Z",
+   "created_by_id": null,
+   "updated_by_id": null
+  },
+  {
+   "id": 3,
+   "order": 3,
+   "ext_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+   "is_360": false,
+   "mapping": "unknown",
+   "packing": "unknown",
+   "lat": null,
+   "long": null,
+   "markercolor": "none",
+   "title": "A video link",
+   "description": null,
+   "textalignment": "top",
+   "name": null,
+   "location": null,
+   "start_time": 12,
+   "duration": 30,
+   "background_color": null,
+   "foreground_color": null,
+   "email": null,
+   "created_at": "2026-10-10T13:54:41.756Z",
+   "updated_at": "2026-10-10T13:54:41.756Z",
+   "published_at": "2026-10-10T13:54:41.756Z",
+   "created_by_id": null,
+   "updated_by_id": null
+  },
+  {
+   "id": 4,
+   "order": 4,
+   "ext_url": null,
+   "is_360": false,
+   "mapping": "unknown",
+   "packing": "unknown",
+   "lat": null,
+   "long": null,
+   "markercolor": "none",
+   "title": "Draft note",
+   "description": "Not published yet",
+   "textalignment": "top",
+   "name": null,
+   "location": null,
+   "start_time": null,
+   "duration": null,
+   "background_color": null,
+   "foreground_color": null,
+   "email": null,
+   "created_at": "2026-10-10T13:54:41.762Z",
+   "updated_at": "2026-10-10T13:54:41.762Z",
+   "published_at": null,
+   "created_by_id": null,
+   "updated_by_id": null
+  },
+  {
+   "id": 5,
+   "order": 1,
+   "ext_url": null,
+   "is_360": false,
+   "mapping": "unknown",
+   "packing": "unknown",
+   "lat": null,
+   "long": null,
+   "markercolor": "none",
+   "title": "Child text",
+   "description": "In the child",
+   "textalignment": "top",
+   "name": null,
+   "location": null,
+   "start_time": null,
+   "duration": null,
+   "background_color": null,
+   "foreground_color": null,
+   "email": null,
+   "created_at": "2026-10-10T13:54:41.768Z",
+   "updated_at": "2026-10-10T13:54:41.768Z",
+   "published_at": "2026-10-10T13:54:41.768Z",
+   "created_by_id": null,
+   "updated_by_id": null
+  }
+ ],
+ "tags": [
+  {
+   "id": 1,
+   "tag": "water",
+   "markercolor": "blue",
+   "created_at": "2026-10-10T13:54:41.206Z",
+   "updated_at": "2026-10-10T13:54:41.206Z",
+   "created_by_id": null,
+   "updated_by_id": null
+  },
+  {
+   "id": 2,
+   "tag": "food",
+   "markercolor": "red",
+   "created_at": "2026-10-10T13:54:41.211Z",
+   "updated_at": "2026-10-10T13:54:41.211Z",
+   "created_by_id": null,
+   "updated_by_id": null
+  }
+ ],
+ "overlays": [
+  {
+   "id": 1,
+   "tl_lat": 51.6,
+   "tl_long": -0.2,
+   "tr_lat": 51.6,
+   "tr_long": 0,
+   "br_lat": 51.4,
+   "br_long": 0,
+   "bl_lat": 51.4,
+   "bl_long": -0.2,
+   "created_at": "2026-10-10T13:54:41.920Z",
+   "updated_at": "2026-10-10T13:54:41.920Z",
+   "created_by_id": null,
+   "updated_by_id": null
+  }
+ ],
+ "tilesets": [
+  {
+   "id": 1,
+   "name": "Toner",
+   "urlformatstring": "https://tiles.example.org/{z}/{x}/{y}.png",
+   "attribution": "© Example",
+   "created_at": "2026-10-10T13:54:41.183Z",
+   "updated_at": "2026-10-10T13:54:41.183Z",
+   "created_by_id": null,
+   "updated_by_id": null
+  }
+ ],
+ "files": [
+  {
+   "id": 1,
+   "name": "london.jpg",
+   "alternative_text": null,
+   "caption": null,
+   "width": 1600,
+   "height": 1200,
+   "formats": {
+    "large": {
+     "ext": ".jpg",
+     "url": "/uploads/large_london_0c37420368.jpg",
+     "hash": "large_london_0c37420368",
+     "mime": "image/jpeg",
+     "name": "large_london.jpg",
+     "path": null,
+     "size": 91.59,
+     "width": 1000,
+     "height": 750
+    },
+    "small": {
+     "ext": ".jpg",
+     "url": "/uploads/small_london_0c37420368.jpg",
+     "hash": "small_london_0c37420368",
+     "mime": "image/jpeg",
+     "name": "small_london.jpg",
+     "path": null,
+     "size": 34.12,
+     "width": 500,
+     "height": 375
+    },
+    "medium": {
+     "ext": ".jpg",
+     "url": "/uploads/medium_london_0c37420368.jpg",
+     "hash": "medium_london_0c37420368",
+     "mime": "image/jpeg",
+     "name": "medium_london.jpg",
+     "path": null,
+     "size": 62.13,
+     "width": 750,
+     "height": 563
+    },
+    "thumbnail": {
+     "ext": ".jpg",
+     "url": "/uploads/thumbnail_london_0c37420368.jpg",
+     "hash": "thumbnail_london_0c37420368",
+     "mime": "image/jpeg",
+     "name": "thumbnail_london.jpg",
+     "path": null,
+     "size": 8.38,
+     "width": 208,
+     "height": 156
+    }
+   },
+   "hash": "london_0c37420368",
+   "ext": ".jpg",
+   "mime": "image/jpeg",
+   "size": "199.83",
+   "url": "/uploads/london_0c37420368.jpg",
+   "preview_url": null,
+   "provider": "local",
+   "folder_path": "/",
+   "created_at": "2026-10-10T13:54:41.422Z",
+   "updated_at": "2026-10-10T13:54:41.422Z",
+   "created_by_id": null,
+   "updated_by_id": null
+  },
+  {
+   "id": 2,
+   "name": "london.jpg",
+   "alternative_text": null,
+   "caption": null,
+   "width": 1600,
+   "height": 1200,
+   "formats": {
+    "large": {
+     "ext": ".jpg",
+     "url": "/uploads/large_london_8bd68cc4a3.jpg",
+     "hash": "large_london_8bd68cc4a3",
+     "mime": "image/jpeg",
+     "name": "large_london.jpg",
+     "path": null,
+     "size": 91.59,
+     "width": 1000,
+     "height": 750
+    },
+    "small": {
+     "ext": ".jpg",
+     "url": "/uploads/small_london_8bd68cc4a3.jpg",
+     "hash": "small_london_8bd68cc4a3",
+     "mime": "image/jpeg",
+     "name": "small_london.jpg",
+     "path": null,
+     "size": 34.12,
+     "width": 500,
+     "height": 375
+    },
+    "medium": {
+     "ext": ".jpg",
+     "url": "/uploads/medium_london_8bd68cc4a3.jpg",
+     "hash": "medium_london_8bd68cc4a3",
+     "mime": "image/jpeg",
+     "name": "medium_london.jpg",
+     "path": null,
+     "size": 62.13,
+     "width": 750,
+     "height": 563
+    },
+    "thumbnail": {
+     "ext": ".jpg",
+     "url": "/uploads/thumbnail_london_8bd68cc4a3.jpg",
+     "hash": "thumbnail_london_8bd68cc4a3",
+     "mime": "image/jpeg",
+     "name": "thumbnail_london.jpg",
+     "path": null,
+     "size": 8.38,
+     "width": 208,
+     "height": 156
+    }
+   },
+   "hash": "london_8bd68cc4a3",
+   "ext": ".jpg",
+   "mime": "image/jpeg",
+   "size": "199.83",
+   "url": "/uploads/london_8bd68cc4a3.jpg",
+   "preview_url": null,
+   "provider": "local",
+   "folder_path": "/",
+   "created_at": "2026-10-10T13:54:41.596Z",
+   "updated_at": "2026-10-10T13:54:41.596Z",
+   "created_by_id": null,
+   "updated_by_id": null
+  },
+  {
+   "id": 3,
+   "name": "london.jpg",
+   "alternative_text": null,
+   "caption": null,
+   "width": 1600,
+   "height": 1200,
+   "formats": {
+    "large": {
+     "ext": ".jpg",
+     "url": "/uploads/large_london_add8818181.jpg",
+     "hash": "large_london_add8818181",
+     "mime": "image/jpeg",
+     "name": "large_london.jpg",
+     "path": null,
+     "size": 91.59,
+     "width": 1000,
+     "height": 750
+    },
+    "small": {
+     "ext": ".jpg",
+     "url": "/uploads/small_london_add8818181.jpg",
+     "hash": "small_london_add8818181",
+     "mime": "image/jpeg",
+     "name": "small_london.jpg",
+     "path": null,
+     "size": 34.12,
+     "width": 500,
+     "height": 375
+    },
+    "medium": {
+     "ext": ".jpg",
+     "url": "/uploads/medium_london_add8818181.jpg",
+     "hash": "medium_london_add8818181",
+     "mime": "image/jpeg",
+     "name": "medium_london.jpg",
+     "path": null,
+     "size": 62.13,
+     "width": 750,
+     "height": 563
+    },
+    "thumbnail": {
+     "ext": ".jpg",
+     "url": "/uploads/thumbnail_london_add8818181.jpg",
+     "hash": "thumbnail_london_add8818181",
+     "mime": "image/jpeg",
+     "name": "thumbnail_london.jpg",
+     "path": null,
+     "size": 8.38,
+     "width": 208,
+     "height": 156
+    }
+   },
+   "hash": "london_add8818181",
+   "ext": ".jpg",
+   "mime": "image/jpeg",
+   "size": "199.83",
+   "url": "/uploads/london_add8818181.jpg",
+   "preview_url": null,
+   "provider": "local",
+   "folder_path": "/",
+   "created_at": "2026-10-10T13:54:41.743Z",
+   "updated_at": "2026-10-10T13:54:41.743Z",
+   "created_by_id": null,
+   "updated_by_id": null
+  },
+  {
+   "id": 4,
+   "name": "london.jpg",
+   "alternative_text": null,
+   "caption": null,
+   "width": 1600,
+   "height": 1200,
+   "formats": {
+    "large": {
+     "ext": ".jpg",
+     "url": "/uploads/large_london_58f62d621b.jpg",
+     "hash": "large_london_58f62d621b",
+     "mime": "image/jpeg",
+     "name": "large_london.jpg",
+     "path": null,
+     "size": 91.59,
+     "width": 1000,
+     "height": 750
+    },
+    "small": {
+     "ext": ".jpg",
+     "url": "/uploads/small_london_58f62d621b.jpg",
+     "hash": "small_london_58f62d621b",
+     "mime": "image/jpeg",
+     "name": "small_london.jpg",
+     "path": null,
+     "size": 34.12,
+     "width": 500,
+     "height": 375
+    },
+    "medium": {
+     "ext": ".jpg",
+     "url": "/uploads/medium_london_58f62d621b.jpg",
+     "hash": "medium_london_58f62d621b",
+     "mime": "image/jpeg",
+     "name": "medium_london.jpg",
+     "path": null,
+     "size": 62.13,
+     "width": 750,
+     "height": 563
+    },
+    "thumbnail": {
+     "ext": ".jpg",
+     "url": "/uploads/thumbnail_london_58f62d621b.jpg",
+     "hash": "thumbnail_london_58f62d621b",
+     "mime": "image/jpeg",
+     "name": "thumbnail_london.jpg",
+     "path": null,
+     "size": 8.38,
+     "width": 208,
+     "height": 156
+    }
+   },
+   "hash": "london_58f62d621b",
+   "ext": ".jpg",
+   "mime": "image/jpeg",
+   "size": "199.83",
+   "url": "/uploads/london_58f62d621b.jpg",
+   "preview_url": null,
+   "provider": "local",
+   "folder_path": "/",
+   "created_at": "2026-10-10T13:54:41.912Z",
+   "updated_at": "2026-10-10T13:54:41.912Z",
+   "created_by_id": null,
+   "updated_by_id": null
+  },
+  {
+   "id": 5,
+   "name": "london.jpg",
+   "alternative_text": null,
+   "caption": null,
+   "width": 1600,
+   "height": 1200,
+   "formats": {
+    "large": {
+     "ext": ".jpg",
+     "url": "/uploads/large_london_2668f74096.jpg",
+     "hash": "large_london_2668f74096",
+     "mime": "image/jpeg",
+     "name": "large_london.jpg",
+     "path": null,
+     "size": 91.59,
+     "width": 1000,
+     "height": 750
+    },
+    "small": {
+     "ext": ".jpg",
+     "url": "/uploads/small_london_2668f74096.jpg",
+     "hash": "small_london_2668f74096",
+     "mime": "image/jpeg",
+     "name": "small_london.jpg",
+     "path": null,
+     "size": 34.12,
+     "width": 500,
+     "height": 375
+    },
+    "medium": {
+     "ext": ".jpg",
+     "url": "/uploads/medium_london_2668f74096.jpg",
+     "hash": "medium_london_2668f74096",
+     "mime": "image/jpeg",
+     "name": "medium_london.jpg",
+     "path": null,
+     "size": 62.13,
+     "width": 750,
+     "height": 563
+    },
+    "thumbnail": {
+     "ext": ".jpg",
+     "url": "/uploads/thumbnail_london_2668f74096.jpg",
+     "hash": "thumbnail_london_2668f74096",
+     "mime": "image/jpeg",
+     "name": "thumbnail_london.jpg",
+     "path": null,
+     "size": 8.38,
+     "width": 208,
+     "height": 156
+    }
+   },
+   "hash": "london_2668f74096",
+   "ext": ".jpg",
+   "mime": "image/jpeg",
+   "size": "199.83",
+   "url": "/uploads/london_2668f74096.jpg",
+   "preview_url": null,
+   "provider": "local",
+   "folder_path": "/",
+   "created_at": "2026-10-10T13:54:42.074Z",
+   "updated_at": "2026-10-10T13:54:42.074Z",
+   "created_by_id": null,
+   "updated_by_id": null
+  }
+ ],
+ "files_related_morphs": [
+  {
+   "id": 1,
+   "file_id": 1,
+   "related_id": 1,
+   "related_type": "api::content.content",
+   "field": "mediafile",
+   "order": 1
+  },
+  {
+   "id": 2,
+   "file_id": 2,
+   "related_id": 2,
+   "related_type": "api::content.content",
+   "field": "mediafile",
+   "order": 1
+  },
+  {
+   "id": 3,
+   "file_id": 3,
+   "related_id": 2,
+   "related_type": "api::content.content",
+   "field": "audiofile",
+   "order": 1
+  },
+  {
+   "id": 4,
+   "file_id": 4,
+   "related_id": 1,
+   "related_type": "api::channel.channel",
+   "field": "picture",
+   "order": 1
+  },
+  {
+   "id": 5,
+   "file_id": 5,
+   "related_id": 1,
+   "related_type": "api::overlay.overlay",
+   "field": "image",
+   "order": 1
+  }
+ ],
+ "channels_owner_links": [
+  {
+   "id": 1,
+   "channel_id": 1,
+   "user_id": 2
+  },
+  {
+   "id": 2,
+   "channel_id": 3,
+   "user_id": 3
+  }
+ ],
+ "channels_parent_links": [
+  {
+   "id": 1,
+   "channel_id": 2,
+   "inv_channel_id": 1,
+   "channel_order": 1
+  },
+  {
+   "id": 2,
+   "channel_id": 3,
+   "inv_channel_id": 1,
+   "channel_order": 2
+  }
+ ],
+ "channels_editors_links": [
+  {
+   "id": 1,
+   "channel_id": 1,
+   "user_id": 4,
+   "user_order": 1
+  }
+ ],
+ "channels_tileset_links": [
+  {
+   "id": 1,
+   "channel_id": 1,
+   "tileset_id": 1
+  }
+ ],
+ "contents_channel_links": [
+  {
+   "id": 1,
+   "content_id": 1,
+   "channel_id": 1,
+   "content_order": 1
+  },
+  {
+   "id": 2,
+   "content_id": 2,
+   "channel_id": 1,
+   "content_order": 2
+  },
+  {
+   "id": 3,
+   "content_id": 3,
+   "channel_id": 1,
+   "content_order": 3
+  },
+  {
+   "id": 4,
+   "content_id": 4,
+   "channel_id": 1,
+   "content_order": 4
+  },
+  {
+   "id": 5,
+   "content_id": 5,
+   "channel_id": 2,
+   "content_order": 1
+  }
+ ],
+ "contents_contributor_links": [
+  {
+   "id": 1,
+   "content_id": 1,
+   "user_id": 4,
+   "content_order": 1
+  }
+ ],
+ "tags_contents_links": [
+  {
+   "id": 1,
+   "tag_id": 1,
+   "content_id": 1,
+   "content_order": 1,
+   "tag_order": 1
+  },
+  {
+   "id": 2,
+   "tag_id": 2,
+   "content_id": 1,
+   "content_order": 1,
+   "tag_order": 2
+  },
+  {
+   "id": 3,
+   "tag_id": 1,
+   "content_id": 2,
+   "content_order": 2,
+   "tag_order": 1
+  }
+ ],
+ "tags_channel_links": [
+  {
+   "id": 1,
+   "tag_id": 1,
+   "channel_id": 1,
+   "tag_order": 1
+  },
+  {
+   "id": 2,
+   "tag_id": 2,
+   "channel_id": 1,
+   "tag_order": 2
+  }
+ ],
+ "overlays_channel_links": [
+  {
+   "id": 1,
+   "overlay_id": 1,
+   "channel_id": 1,
+   "overlay_order": 1
+  }
+ ]
+}

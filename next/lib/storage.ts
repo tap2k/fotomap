@@ -14,7 +14,7 @@ import { appUrl } from '@/lib/auth';
 // One interface, two drivers: any S3-compatible bucket (R2, B2, MinIO, AWS) or a local folder.
 export interface Storage {
   /** URL the browser PUTs the file to. */
-  uploadUrl(key: string, contentType: string): Promise<string>;
+  uploadUrl(key: string, contentType: string, size: number): Promise<string>;
   /** Public URL for reading. */
   publicUrl(key: string): string;
   /** Actual stored size in bytes, or null if missing. */
@@ -35,10 +35,10 @@ export function localPath(key: string) {
 }
 
 const local: Storage = {
-  async uploadUrl(key, contentType) {
+  async uploadUrl(key, contentType, size) {
     const exp = Math.floor(Date.now() / 1000) + UPLOAD_TTL;
-    const sig = sign(`${key}:${exp}:${contentType}`);
-    return `/api/files/${key}?exp=${exp}&sig=${sig}`;
+    const sig = sign(`${key}:${exp}:${contentType}:${size}`);
+    return `/api/files/${key}?exp=${exp}&size=${size}&sig=${sig}`;
   },
   publicUrl: (key) => `/api/files/${key}`,
   async size(key) {
@@ -68,9 +68,11 @@ function s3Storage(): Storage {
   });
   const base = (process.env.S3_PUBLIC_URL ?? `${process.env.S3_ENDPOINT}/${bucket}`).replace(/\/$/, '');
   return {
-    uploadUrl: (key, contentType) =>
-      getSignedUrl(client, new PutObjectCommand({ Bucket: bucket, Key: key, ContentType: contentType }), {
+    // ContentLength is signed, so the browser must upload exactly the size it declared.
+    uploadUrl: (key, contentType, size) =>
+      getSignedUrl(client, new PutObjectCommand({ Bucket: bucket, Key: key, ContentType: contentType, ContentLength: size }), {
         expiresIn: UPLOAD_TTL,
+        signableHeaders: new Set(['content-length', 'content-type']),
       }),
     publicUrl: (key) => `${base}/${key}`,
     async size(key) {

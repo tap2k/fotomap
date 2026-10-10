@@ -28,7 +28,7 @@ export const POST = route(async (req) => {
     files.map(async (f) => {
       const ext = (f.name.match(/\.[a-z0-9]{1,5}$/i)?.[0] ?? '').toLowerCase();
       const key = `${fileKeyPrefix(channel.id)}${newId(16)}${ext}`;
-      return { key, uploadUrl: await storage.uploadUrl(key, f.type), url: storage.publicUrl(key) };
+      return { key, uploadUrl: await storage.uploadUrl(key, f.type, f.size), url: storage.publicUrl(key) };
     }),
   );
 });

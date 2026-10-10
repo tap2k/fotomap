@@ -7,13 +7,16 @@ import type * as GeoJSON from 'geojson';
 import { MAP_STYLE } from '@/lib/style';
 import type { ChannelSettings } from '@/lib/types';
 
+// The worker is copied to /public on install (see package.json postinstall); bundlers can't resolve it.
+maplibregl.setWorkerUrl('/maplibre-gl-worker.mjs');
+
 export type MapPoint = { id: string; lat: number; lng: number; color: string; isChannel?: boolean };
 export type Focus = { lat: number; lng: number; zoom?: number; bearing?: number; pitch?: number };
 
 type Props = {
   points: MapPoint[];
-  overlays?: ChannelSettings['overlays'];
-  styleUrl?: string;
+  /** Basemap and overlays, straight from the channel settings. */
+  mapSettings?: Pick<ChannelSettings, 'mapStyle' | 'mapAttribution' | 'overlays'>;
   initial?: Focus | null;
   focus?: Focus | null;
   selectedId?: string | null;
@@ -36,8 +39,7 @@ const toGeoJson = (points: MapPoint[]): GeoJSON.FeatureCollection => ({
 /** The one MapLibre wrapper: clustered points, image overlays, fly-to focus, click-to-place. */
 export default function MapCanvas({
   points,
-  overlays = [],
-  styleUrl,
+  mapSettings = {},
   initial,
   focus,
   selectedId,
@@ -52,6 +54,7 @@ export default function MapCanvas({
   const ready = useRef(false);
   const handlers = useRef({ onSelect, onMapClick });
   handlers.current = { onSelect, onMapClick };
+  const overlays = mapSettings.overlays;
   const latest = useRef({ points, overlays, selectedId });
   latest.current = { points, overlays, selectedId };
 
@@ -59,7 +62,7 @@ export default function MapCanvas({
   useEffect(() => {
     const map = new maplibregl.Map({
       container: container.current!,
-      style: styleUrl || MAP_STYLE,
+      style: toStyle(mapSettings.mapStyle, mapSettings.mapAttribution),
       center: initial ? [initial.lng, initial.lat] : [0, 20],
       zoom: initial?.zoom ?? (initial ? 10 : 1.5),
       bearing: initial?.bearing ?? 0,
@@ -140,7 +143,7 @@ export default function MapCanvas({
       map.remove();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [styleUrl, cluster, interactive]);
+  }, [mapSettings.mapStyle, mapSettings.mapAttribution, cluster, interactive]);
 
   useEffect(() => {
     if (ready.current) (mapRef.current?.getSource('points') as GeoJSONSource | undefined)?.setData(toGeoJson(points));
@@ -167,6 +170,18 @@ export default function MapCanvas({
   }, [focus]);
 
   return <div ref={container} className={`h-full w-full ${className}`} />;
+}
+
+/** A MapLibre style URL, or an XYZ raster template (old Fotomap tilesets) wrapped in a minimal style. */
+function toStyle(url?: string, attribution?: string): string | maplibregl.StyleSpecification {
+  if (!url) return MAP_STYLE;
+  if (!url.includes('{z}')) return url;
+  return {
+    version: 8,
+    glyphs: 'https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf',
+    sources: { raster: { type: 'raster', tiles: [url], tileSize: 256, attribution } },
+    layers: [{ id: 'raster', type: 'raster', source: 'raster' }],
+  };
 }
 
 function fitTo(map: maplibregl.Map, points: MapPoint[]) {

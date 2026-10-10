@@ -50,10 +50,10 @@ export default function StoryView({ channel }: { channel: Channel }) {
   return (
     <div className="relative sm:flex">
       <div className="sticky top-0 z-0 h-[45dvh] sm:order-2 sm:h-dvh sm:flex-1">
-        <MapCanvas points={points} overlays={settings.overlays} styleUrl={settings.mapStyle} focus={focus} selectedId={focusItem?.id} cluster={false} />
+        <MapCanvas points={points} mapSettings={settings} focus={focus} selectedId={focusItem?.id} cluster={false} />
       </div>
       <div className="relative z-10 sm:order-1 sm:w-[min(32rem,45%)]">
-        <section ref={(el) => { refs.current[0] = el; }} data-index={-1} className="flex min-h-[70dvh] flex-col justify-center p-6 sm:p-10">
+        <section ref={(el) => { refs.current[0] = el; }} data-index={-1} className="mx-4 my-[20dvh] flex flex-col justify-center rounded-xl bg-bg p-6 shadow-lg sm:mx-0 sm:my-0 sm:min-h-[70dvh] sm:rounded-none sm:bg-transparent sm:p-10 sm:shadow-none">
           <h1 className="text-3xl font-bold sm:text-4xl">{channel.title}</h1>
           <Text text={channel.description} className="mt-4 text-muted" />
           {items.length > 0 && <p className="mt-8 text-sm text-muted">Scroll to begin ↓</p>}

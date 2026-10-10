@@ -25,7 +25,8 @@ export const channelSettingsSchema = z
   .object({
     theme: z.enum(THEMES).optional(),
     defaultView: z.enum(VIEWS).optional(),
-    mapStyle: safeUrl.optional(),
+    mapStyle: safeUrl.optional(), // MapLibre style JSON, or a raster tile template with {z}/{x}/{y}
+    mapAttribution: z.string().max(500).optional(),
     markerColor: z.string().optional(),
     tagColors: z.record(z.string(), z.string()).optional(),
     overlays: z.array(overlaySchema).optional(),

@@ -1,0 +1,25 @@
+name: v2
+on:
+  push:
+    paths: ['next/**', '.github/workflows/v2.yml']
+  pull_request:
+    paths: ['next/**', '.github/workflows/v2.yml']
+defaults:
+  run:
+    working-directory: next
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: next/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run e2e

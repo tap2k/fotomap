@@ -30,7 +30,7 @@ export default async function ChannelPage({ params, searchParams }: Props) {
 
   return (
     <div data-theme={channel.settings.theme ?? 'light'} className={full ? 'flex h-dvh flex-col bg-bg text-fg' : 'min-h-dvh bg-bg text-fg'}>
-      <header className={`z-20 flex items-center gap-3 border-b border-line bg-bg px-3 py-2 ${full ? '' : 'sticky top-0'}`}>
+      <header className={`z-20 flex items-center gap-3 border-b border-line bg-bg px-3 py-2 ${view === 'grid' ? 'sticky top-0' : ''}`}>
         <Link href="/" className="shrink-0" aria-label="Fotomap home">
           <img src="/favicon-32x32.png" alt="" className="h-6 w-6" />
         </Link>

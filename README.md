@@ -1,5 +1,7 @@
 # Fotomap
 
+> **v2 in progress:** a rewrite as a single TypeScript Next.js app (no Strapi) lives in [`next/`](next/README.md) on the `claude/repo-reimplementation-review-qsix6e` branch.
+
 Multimedia content sharing platform with maps, slideshows, and grids. Built with Next.js 13 (Pages Router) + Reactstrap, backed by a Strapi headless CMS.
 
 ## Prerequisites

@@ -1,6 +1,7 @@
-import { createReadStream } from 'node:fs';
-import { stat, writeFile } from 'node:fs/promises';
-import { Readable } from 'node:stream';
+import { createReadStream, createWriteStream } from 'node:fs';
+import { stat, unlink } from 'node:fs/promises';
+import { Readable, Transform } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 import { verify } from '@/lib/crypto';
 import { mimeFromName } from '@/lib/mime';
 import { ensureLocalDir, isLocalStorage, localPath } from '@/lib/storage';
@@ -9,7 +10,6 @@ import { ensureLocalDir, isLocalStorage, localPath } from '@/lib/storage';
 // Keys are unguessable, like objects in a public S3 bucket.
 
 type Ctx = { params: Promise<{ key: string[] }> };
-const MAX_LOCAL_UPLOAD = 1024 * 1024 * 1024;
 
 export async function GET(req: Request, { params }: Ctx) {
   if (!isLocalStorage) return new Response('Not found', { status: 404 });
@@ -49,13 +49,26 @@ export async function PUT(req: Request, { params }: Ctx) {
   const key = (await params).key.join('/');
   const url = new URL(req.url);
   const exp = Number(url.searchParams.get('exp'));
+  const size = Number(url.searchParams.get('size'));
   const type = req.headers.get('content-type') ?? '';
-  if (!exp || exp < Date.now() / 1000 || !verify(`${key}:${exp}:${type}`, url.searchParams.get('sig') ?? ''))
+  if (!exp || exp < Date.now() / 1000 || !verify(`${key}:${exp}:${type}:${size}`, url.searchParams.get('sig') ?? ''))
     return new Response('Forbidden', { status: 403 });
-  const body = Buffer.from(await req.arrayBuffer());
-  if (body.length > MAX_LOCAL_UPLOAD) return new Response('Too large', { status: 413 });
+  if (!req.body) return new Response('Empty', { status: 400 });
   const file = localPath(key);
   await ensureLocalDir(file);
-  await writeFile(file, body);
+  // Stream to disk; stop as soon as the upload exceeds the signed size.
+  let received = 0;
+  const limit = new Transform({
+    transform(chunk, _enc, done) {
+      received += chunk.length;
+      done(received > size ? new Error('Too large') : null, chunk);
+    },
+  });
+  try {
+    await pipeline(Readable.fromWeb(req.body as import('node:stream/web').ReadableStream), limit, createWriteStream(file));
+  } catch {
+    await unlink(file).catch(() => {});
+    return new Response('Upload rejected', { status: 413 });
+  }
   return new Response(null, { status: 200 });
 }

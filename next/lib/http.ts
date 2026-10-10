@@ -17,6 +17,9 @@ type Handler<C> = (req: Request, ctx: C) => Promise<unknown>;
 export function route<C>(handler: Handler<C>) {
   return async (req: Request, ctx: C) => {
     try {
+      // Writes must come from our own pages (defence in depth on top of SameSite cookies).
+      const origin = req.headers.get('origin');
+      if (req.method !== 'GET' && origin && !sameSite(origin, req)) fail(403, 'Cross-site request');
       const result = await handler(req, ctx);
       return result instanceof Response ? result : NextResponse.json(result ?? { ok: true });
     } catch (err) {
@@ -27,4 +30,9 @@ export function route<C>(handler: Handler<C>) {
       return NextResponse.json({ error: 'Server error' }, { status: 500 });
     }
   };
+}
+
+function sameSite(origin: string, req: Request) {
+  const host = new URL(origin).host;
+  return host === new URL(req.url).host || host === req.headers.get('host') || (!!process.env.APP_URL && host === new URL(process.env.APP_URL).host);
 }
